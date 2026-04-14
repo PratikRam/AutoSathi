@@ -18,7 +18,11 @@ const registerController = async (req, res) => {
         })
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' })
 
-        res.cookie('token', token)
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: false,       // ❗ false in localhost
+            sameSite: "Lax"      // or "Strict"
+        })
         res.status(201).json({
             message: "User registered successfully",
             user,
@@ -46,7 +50,7 @@ const loginController = async (req, res) => {
             })
             return
         }
-        const userPassword =  await bcrypt.compare(password, userOne.password)
+        const userPassword = await bcrypt.compare(password, userOne.password)
 
         if (!userPassword) {
             res.status(401).json({
@@ -57,6 +61,13 @@ const loginController = async (req, res) => {
 
         // const token = jwt.sign({ id: userOne._id }, process.env.JWT_SECRET)
         // res.cookie('token', token)
+        const token = jwt.sign({ id: userOne._id }, process.env.JWT_SECRET, { expiresIn: '1d' })
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: false,       // ❗ false in localhost
+            sameSite: "Lax"      // or "Strict"
+        })
 
         res.status(200).json({
             user: userOne,
@@ -70,5 +81,23 @@ const loginController = async (req, res) => {
     }
 }
 
-module.exports = { registerController, loginController }
+const logoutController = (req, res) => {
+    try {
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+        });
+
+        return res.status(200).json({
+            message: "Logged out successfully",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Logout failed",
+        });
+    }
+};
+
+module.exports = { registerController, loginController, logoutController }
 

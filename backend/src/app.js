@@ -1,29 +1,32 @@
 const express = require('express');
 const AuthRoutes = require('./routes/auth.Routes')
+const CheckAuthRoutes = require("./routes/checkAuth.Route")
 const CarRoutes = require('./routes/car.Routes')
 const ServiceRoutes = require('./routes/Service.Routes')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 
 const app = express();
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
+
 app.use(express.json());
-app.use(cors());
 app.use(cookieParser())
+// console.log("auth :", AuthRoutes);
 
 // auth routes
-app.use('/register', AuthRoutes)
+app.use('/api/auth', AuthRoutes)
 
-app.use("/login", AuthRoutes)
+//checkauth routes
+app.use("/api", CheckAuthRoutes)
 
 // car routes
-app.use('/addCars', CarRoutes)
-app.use('/getCars', CarRoutes)
-app.use('/deleteCar', CarRoutes)
+app.use('/car', CarRoutes)
 
 // service routes
-app.use('/addService', ServiceRoutes)
-app.use('/getService', ServiceRoutes)
-app.use('/deleteService', ServiceRoutes)
+app.use('/service', ServiceRoutes)
 
 module.exports = app;
 

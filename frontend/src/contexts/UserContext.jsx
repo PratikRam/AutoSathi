@@ -1,51 +1,19 @@
-import React, { createContext, useContext, useMemo, useState } from 'react'
-import { loginUser, registerUser } from '../api/services/auth.api'
+import { CheckAuth } from '@/api/services/checkAuth.api'
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 
-export const UserDataContext = createContext(null)
+const UserDataContext = createContext(null)
 
 const UserContext = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [user, setUser] = useState(null)
-  const [authLoading, setAuthLoading] = useState(false)
+  const [authLoading, setAuthLoading] = useState(true) // Start as true
   const [authError, setAuthError] = useState('')
-
-  const login = async userData => {
-    setAuthLoading(true)
-    setAuthError('')
-
-    try {
-      const response = await loginUser(userData)
-      setIsAuthenticated(true)
-      setUser(response?.user ?? null)
-      return response
-    } catch (error) {
-      setIsAuthenticated(false)
-      setUser(null)
-      setAuthError(error.message)
-      throw error
-    } finally {
-      setAuthLoading(false)
-    }
-  }
-
-  const registerAccount = async userData => {
-    setAuthLoading(true)
-    setAuthError('')
-
-    try {
-      const response = await registerUser(userData)
-      setIsAuthenticated(true)
-      setUser(response?.user ?? null)
-      return response
-    } catch (error) {
-      setIsAuthenticated(false)
-      setUser(null)
-      setAuthError(error.message)
-      throw error
-    } finally {
-      setAuthLoading(false)
-    }
-  }
 
   const logout = () => {
     setIsAuthenticated(false)
@@ -53,15 +21,33 @@ const UserContext = ({ children }) => {
     setAuthError('')
   }
 
+  const checkAuthUser = async () => {
+    try {
+      const data = await CheckAuth()
+      setUser(data.user)
+      setIsAuthenticated(data.isAuthenticated)
+      console.log(user, isAuthenticated)
+    } catch (err) {
+      console.log(err)
+      setUser(null)
+      setIsAuthenticated(false)
+    } finally {
+      setAuthLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    checkAuthUser() // runs on app load
+  }, [])
+
   const value = useMemo(
     () => ({
       authError,
       authLoading,
       isAuthenticated,
-      login,
       logout,
-      registerAccount,
       setAuthError,
+      setAuthLoading,
       setIsAuthenticated,
       setUser,
       user
@@ -76,6 +62,8 @@ const UserContext = ({ children }) => {
   )
 }
 
+export default UserContext
+
 export const useUserData = () => {
   const context = useContext(UserDataContext)
 
@@ -85,5 +73,3 @@ export const useUserData = () => {
 
   return context
 }
-
-export default UserContext

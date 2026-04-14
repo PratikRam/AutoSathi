@@ -1,28 +1,38 @@
-import { Calendar } from '@/components/ui/calendar'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useUserData } from '@/contexts/UserContext'
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { addVehicle } from '@/api/services/vehicle.api'
+import useVehicleStore from '@/store/vehicleStore'
+import { useNavigate } from 'react-router-dom'
 
 const AddVehicle = () => {
-  const [date, setDate] = useState()
-
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    reset
   } = useForm()
 
+  const { addVehicleToList, setLoading, setError } = useVehicleStore()
+
+  const navigate = useNavigate()
   const AddVehiclehandler = async data => {
     try {
-      // await addVehicle(data)'
-      console.log(data)
+      setLoading(true)
+      const response = await addVehicle(data)
+      console.log(response.car)
+      addVehicleToList(response.car)
+      setError(null)
+      reset() // Clear form after successful submission
+      alert('Vehicle added successfully!')
+      navigate('/myvehicles')
     } catch (error) {
+      setError(error.message)
       console.log(error.message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -40,13 +50,13 @@ const AddVehicle = () => {
               type='text'
               className='w-full px-3 py-2 border rounded'
               placeholder='Enter your Vehicle name'
-              {...register('vehiclename', {
+              {...register('vehicleName', {
                 required: 'Vehicle Name is required'
               })}
             />
-            {errors.vehiclename && (
+            {errors.vehicleName && (
               <p className='text-red-500 text-sm'>
-                {errors.vehiclename.message}
+                {errors.vehicleName.message}
               </p>
             )}
           </div>
@@ -89,12 +99,12 @@ const AddVehicle = () => {
             <Input
               type='date'
               className='w-full px-3 py-2 border rounded'
-              {...register('PucExpiry', {
+              {...register('pucExpiry', {
                 required: 'PUC Expiry is required'
               })}
             />
-            {errors.PucExpiry && (
-              <p className='text-red-500 text-sm'>{errors.PucExpiry.message}</p>
+            {errors.pucExpiry && (
+              <p className='text-red-500 text-sm'>{errors.pucExpiry.message}</p>
             )}
           </div>
 
@@ -105,7 +115,6 @@ const AddVehicle = () => {
           >
             Add Vehicle
           </Button>
-          
         </form>
       </Card>
     </div>

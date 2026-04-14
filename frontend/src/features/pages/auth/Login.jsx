@@ -1,6 +1,7 @@
 import { Card } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { useUserData } from '@/contexts/UserContext'
+import { loginUser } from '@/api/services/auth.api'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
@@ -12,16 +13,32 @@ const Login = () => {
     formState: { errors }
   } = useForm()
 
-  const { authError, authLoading, login } = useUserData()
+  const {
+    authError,
+    authLoading,
+    setAuthLoading,
+    setAuthError,
+    setIsAuthenticated,
+    setUser
+  } = useUserData()
 
   const navigate = useNavigate()
 
   const onSubmit = async data => {
+    setAuthLoading(true)
+    setAuthError('')
     try {
-      await login(data)
+      const response = await loginUser(data)
+      setIsAuthenticated(true)
+      setUser(response?.user ?? null)
       navigate('/myvehicles')
     } catch (err) {
+      setIsAuthenticated(false)
+      setUser(null)
+      setAuthError(err.message)
       console.log(err.message)
+    } finally {
+      setAuthLoading(false)
     }
   }
 
@@ -56,7 +73,7 @@ const Login = () => {
               className='w-full px-3 py-2 border rounded'
               placeholder='Enter your password'
               {...register('password', {
-                required: 'Password is required',
+                required: 'Password is required'
                 // minLength: {
                 //   value: 6,
                 //   message: 'Minimum 6 characters required'
@@ -77,7 +94,9 @@ const Login = () => {
             {authLoading ? 'Logging in...' : 'Login'}
           </button>
 
-          {authError && <p className='mt-2 text-sm text-red-500'>{authError}</p>}
+          {authError && (
+            <p className='mt-2 text-sm text-red-500'>{authError}</p>
+          )}
 
           {/* Register Link */}
           <div className='mt-2'>

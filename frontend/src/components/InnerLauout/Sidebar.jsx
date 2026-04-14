@@ -1,5 +1,7 @@
+import { logout } from '@/api/services/auth.api'
 import React from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { Navigate, NavLink, useNavigate } from 'react-router-dom'
+import { Button } from '../ui/button'
 
 const Sidebar = () => {
   const navigate = useNavigate()
@@ -7,8 +9,8 @@ const Sidebar = () => {
   const menuItems = [
     { label: 'My Vehicles', path: '/myvehicles' },
     { label: 'Add Vehicle', path: '/addvehicle' },
-    { label: 'Services', path: '/servicevehicle' },
-    { label: 'New Service Entry', path: '/newserviceentry' }
+    // { label: 'Services', path: '/servicevehicle' },
+    // { label: 'New Service Entry', path: '/newserviceentry' }
   ]
 
   return (
@@ -29,7 +31,16 @@ const Sidebar = () => {
           </NavLink>
         ))}
       </nav>
-    </div>
+      <Button
+        className='px-4 py-3 text-left font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg absolute bottom-5'
+        onClick={async () => {
+          await logout()
+          navigate('./login')
+        }}
+      >
+        Log out
+      </Button>
+    </div >
   )
 }
 

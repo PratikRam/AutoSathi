@@ -1,9 +1,9 @@
-const car = require('../models/Service.model');
+const ServiceModel = require('../models/Service.model');
 
 const addServiceController = async (req, res) => {
     try {
         const { serviceDate, garageName, cost, notes } = req.body;
-        const ServiceCar = await car.create({
+        const ServiceCar = await ServiceModel.create({
             // userId: req.user.id,
             carId: req.params.carId,
             serviceDate,
@@ -22,7 +22,7 @@ const addServiceController = async (req, res) => {
 
 const getServicesController = async (req, res) => {
     try {
-        const services = await car.find({ carId: req.params.carId });
+        const services = await ServiceModel.find({ carId: req.params.carId });
         res.status(200).json({ services });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching services', error });
@@ -32,7 +32,7 @@ const getServicesController = async (req, res) => {
 
 const deleteService = async (req, res) => {
     try {
-        const service = await car.findById(req.params.id)
+        const service = await ServiceModel.findById(req.params.id)
 
         if (!service) {
             return res.status(404).json({ message: 'Service not found' })

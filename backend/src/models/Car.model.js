@@ -6,7 +6,7 @@ const carSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    VehicleName: {
+    vehicleName: {
         type: String,
         required: true
     },
@@ -14,20 +14,23 @@ const carSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    purchaseDate: {
-        type: Date
-    },
-    insuranceExpiry: {
-        type: Date,
-        required: true
-    },
+    // generalServiceDate: {
+    //     type: String
+    // },
+    // purchaseDate: {
+    //     type: Date
+    // },
+    // insuranceExpiry: {
+    //     type: Date,
+    //     required: true
+    // },
     pucExpiry: {
         type: Date,
         required: true
     },
-    imageUrl: {
-        type: String
-    }
+    // imageUrl: {
+    //     type: String
+    // }
 }, { timestamps: true })
 
 const Car = mongoose.model('Car', carSchema)

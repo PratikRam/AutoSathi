@@ -1,24 +1,27 @@
 import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-// import PublicRoutes from './routes/PublicRoutes'
-// import ProtectedRoutes from './routes/ProtectedRoutes'
 import MainInnerLayout from './components/InnerLauout/MainInnerLayout'
 import MainLandingLayout from './components/LandingLauout/MainLandingLayout'
-import ServiceVehicle from './features/pages/Dashboard/ServicesVehicle'
 import AddVehicle from './features/pages/Dashboard/AddVehicle'
 import NewServicesEntry from './features/pages/Dashboard/NewServicesEntry'
-import LandingFeatures from './features/pages/public/LandingFeatures'
-import LandingHowitsWork from './features/pages/public/LandingHowitsWork'
-import LandingAboutUs from './features/pages/public/LandingAboutUs'
 import Login from './features/pages/auth/Login'
 import Register from './features/pages/auth/Register'
 import Home from './features/pages/public/Home'
 import MainLandingPage from './features/pages/public/MainLandingPage'
 import MyVehicle from './features/pages/Dashboard/MyVehicle'
 import { useUserData } from './contexts/UserContext'
+import ServicesHistory from './features/pages/Dashboard/ServicesHistory'
 
 const App = () => {
-  const { isAuthenticated } = useUserData()
+  const { isAuthenticated, authLoading } = useUserData()
+
+  if (authLoading) {
+    return (
+      <div className='flex items-center justify-center h-screen'>
+        Loading...
+      </div>
+    )
+  }
 
   return (
     <Routes>
@@ -34,15 +37,13 @@ const App = () => {
       {/* Private Routes */}
       <Route
         path='/login'
-        element={
-          isAuthenticated ? <Navigate to='/myvehicles' /> : <Login />
-        }
+        element={!isAuthenticated ? <Login /> : <Navigate to='/myvehicles' />}
       />
 
       <Route
         path='/register'
         element={
-          isAuthenticated ? <Navigate to='/myvehicles' /> : <Register />
+          !isAuthenticated ? <Register /> : <Navigate to='/myvehicles' />
         }
       />
 
@@ -56,7 +57,7 @@ const App = () => {
         <Route index element={<Navigate to='/myvehicles' />} />
         <Route path='myvehicles' element={<MyVehicle />} />
         <Route path='addvehicle' element={<AddVehicle />} />
-        <Route path='servicevehicle' element={<ServiceVehicle />} />
+        <Route path='serviceshistory' element={<ServicesHistory />} />
         <Route path='newserviceentry' element={<NewServicesEntry />} />
       </Route>
     </Routes>

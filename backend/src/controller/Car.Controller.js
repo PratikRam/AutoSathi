@@ -2,12 +2,13 @@ const car = require('../models/Car.model');
 
 const addCarController = async (req, res) => {
     try {
-        const { VehicleName, registrationNumber, purchaseDate, insuranceExpiry, pucExpiry, imageUrl } = req.body
+        const { vehicleName, registrationNumber, purchaseDate, generalServiceDate, insuranceExpiry, pucExpiry, imageUrl } = req.body
         const newCar = await car.create({
             userId: req.user.id,
-            VehicleName,
+            vehicleName,
             registrationNumber,
             purchaseDate,
+            generalServiceDate,
             insuranceExpiry,
             pucExpiry,
             imageUrl

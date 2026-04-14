@@ -1,7 +1,8 @@
 import { Card } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import React from 'react'
 import { useUserData } from '@/contexts/UserContext'
+import { registerUser } from '@/api/services/auth.api'
+import React from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -12,15 +13,31 @@ const Register = () => {
     formState: { errors }
   } = useForm()
 
-  const { authError, authLoading, registerAccount } = useUserData()
+  const {
+    authError,
+    authLoading,
+    setAuthLoading,
+    setAuthError,
+    setIsAuthenticated,
+    setUser
+  } = useUserData()
   const navigate = useNavigate()
 
   const onSubmit = async data => {
+    setAuthLoading(true)
+    setAuthError('')
     try {
-      await registerAccount(data)
+      const response = await registerUser(data)
+      setIsAuthenticated(true)
+      setUser(response?.user ?? null)
       navigate('/myvehicles')
     } catch (error) {
+      setIsAuthenticated(false)
+      setUser(null)
+      setAuthError(error.message)
       console.log(error.message)
+    } finally {
+      setAuthLoading(false)
     }
   }
 
@@ -94,7 +111,9 @@ const Register = () => {
             {authLoading ? 'Registering...' : 'Register'}
           </button>
 
-          {authError && <p className='mt-2 text-sm text-red-500'>{authError}</p>}
+          {authError && (
+            <p className='mt-2 text-sm text-red-500'>{authError}</p>
+          )}
 
           {/* Register Link */}
           <div className='mt-2'>

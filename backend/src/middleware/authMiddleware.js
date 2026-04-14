@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken")
-const cookieParser = require("cookie-parser")
+// const cookieParser = require("cookie-parser")
 
 const protect = (req, res, next) => {
     const token = req.cookies.token
@@ -7,6 +7,10 @@ const protect = (req, res, next) => {
 
     if (!token) {
         console.log("plz login or signUp first");
+        res.status(400).json({
+            message: "Unauthorized"
+        })
+        return
     }
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
@@ -15,7 +19,7 @@ const protect = (req, res, next) => {
 
     } catch (error) {
         res.status(500).json({
-            massage: "invalide"
+            message: "invalide"
         })
     }
 }
