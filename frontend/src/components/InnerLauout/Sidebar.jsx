@@ -9,6 +9,7 @@ const Sidebar = () => {
   const menuItems = [
     { label: 'My Vehicles', path: '/myvehicles' },
     { label: 'Add Vehicle', path: '/addvehicle' },
+    { label: 'All Maintenances', path: '/allmaintenances' }
     // { label: 'Services', path: '/servicevehicle' },
     // { label: 'New Service Entry', path: '/newserviceentry' }
   ]

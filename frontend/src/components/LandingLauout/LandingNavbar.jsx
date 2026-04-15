@@ -30,7 +30,7 @@ const LandingNavbar = () => {
 
         <div className='flex justify-between items-center gap-6  font-medium'>
           <NavLink
-            href='home'
+            to='home'
             className='px-4 py-2 text-slate-700 hover:text-emerald-600 transition-colors font-medium text-md rounded-lg hover:bg-emerald-50 cursor-pointer'
             onClick={e => handleSmoothScroll(e, 'home')}
           >

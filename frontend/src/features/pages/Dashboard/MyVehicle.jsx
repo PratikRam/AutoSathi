@@ -1,6 +1,7 @@
 import { getVehicle } from '@/api/services/vehicle.api'
 import { Button } from '@/components/ui/button'
 import useVehicleStore from '@/store/vehicleStore'
+import { Loader } from 'lucide-react'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -41,9 +42,10 @@ const MyVehicle = () => {
       </p>
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
         {loading ? (
-          <p className='col-span-full text-center text-gray-500'>
-            Loading vehicles...
-          </p>
+          <Loader />
+          // <p className='col-span-full text-center text-gray-500'>
+          //   Loading vehicles...
+          // </p>
         ) : vehicles.length > 0 ? (
           vehicles.map(vehicle => (
             <div
