@@ -24,11 +24,12 @@ const UserContext = ({ children }) => {
   const checkAuthUser = async () => {
     try {
       const data = await CheckAuth()
+      console.log("data is this", data);
       setUser(data.user)
       setIsAuthenticated(data.isAuthenticated)
       console.log(user, isAuthenticated)
     } catch (err) {
-      console.log(err)
+      console.log("err is this", err)
       setUser(null)
       setIsAuthenticated(false)
     } finally {
