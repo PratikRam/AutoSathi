@@ -63,10 +63,16 @@ const loginController = async (req, res) => {
         // res.cookie('token', token)
         const token = jwt.sign({ id: userOne._id }, process.env.JWT_SECRET, { expiresIn: '1d' })
 
+        // res.cookie("token", token, {
+        //     httpOnly: true,
+        //     secure: false,       // ❗ false in localhost
+        //     sameSite: "Lax"      // or "Strict"
+        // })
+
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false,       // ❗ false in localhost
-            sameSite: "Lax"      // or "Strict"
+            secure: true,
+            sameSite: "None"
         })
 
         res.status(200).json({

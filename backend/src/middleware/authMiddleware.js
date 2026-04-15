@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken")
 
 const protect = (req, res, next) => {
     const token = req.cookies.token
-    console.log(token);
+    console.log("token is this", token);
 
     if (!token) {
         console.log("plz login or signUp first");
@@ -18,6 +18,7 @@ const protect = (req, res, next) => {
         next()
 
     } catch (error) {
+        console.log("error is this", error);
         res.status(500).json({
             message: "invalide"
         })
