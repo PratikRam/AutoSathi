@@ -20,8 +20,8 @@ const registerController = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false,       // ❗ false in localhost
-            sameSite: "Lax"      // or "Strict"
+            secure: true,
+            sameSite: "None"
         })
         res.status(201).json({
             message: "User registered successfully",
@@ -91,8 +91,8 @@ const logoutController = (req, res) => {
     try {
         res.clearCookie("token", {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            secure: true,
+            sameSite: "None",
         });
 
         return res.status(200).json({
