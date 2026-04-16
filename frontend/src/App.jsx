@@ -60,8 +60,8 @@ const App = () => {
         <Route index element={<Navigate to='/myvehicles' />} />
         <Route path='myvehicles' element={<MyVehicle />} />
         <Route path='addvehicle' element={<AddVehicle />} />
-        <Route path='serviceshistory' element={<ServicesHistory />} />
-        <Route path='newserviceentry' element={<NewServicesEntry />} />
+        <Route path='serviceshistory/:id' element={<ServicesHistory />} />
+        <Route path='add-service/:id' element={<NewServicesEntry />} />
         <Route path='*' element={<NotFoundPage />} />
       </Route>
     </Routes>

@@ -5,27 +5,31 @@ import { Label } from '@/components/ui/label'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import useServiceStore from '@/store/servicesStore'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Textarea } from '@/components/ui/textarea'
+import useVehicleStore from '@/store/vehicleStore'
+import { addServiceHandler } from '@/api/services/services.api'
 
 const NewServicesEntry = () => {
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm()
   const { addService, loading, error, setLoading, setError } = useServiceStore()
 
+  const { id } = useParams()
+
   const navigate = useNavigate()
 
   const AddServicehandler = async (data) => {
     try {
       setLoading(true)
-      const response = await addService(data)
+      const response = await addServiceHandler(id, data)
       console.log(response)
       setError(null)
       reset()
-      navigate('/serviceshistory')
+      navigate(`/serviceshistory/${id}`)
     } catch (error) {
       setError(error.message)
-      console.log(error.message)
+      console.log(error)
     } finally {
       setLoading(false)
     }
@@ -103,7 +107,7 @@ const NewServicesEntry = () => {
         {/* Button */}
         <Button
           type='submit'
-          className='w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-200 active:scale-98 cursor-pointer  '
+          className='w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-200 active:scale-98 cursor-pointer'
         >
           Add Service
         </Button>

@@ -1,19 +1,22 @@
 import { axiosInstance } from "../axios"
 
-export const addService = async (data) => {
+export const addServiceHandler = async (carId, data) => {
+    console.log(carId);
+    console.log(data);
+
     try {
-        const response = await axiosInstance.post('/service/add', data)
+        const response = await axiosInstance.post(`/service/${carId}`, data)
         console.log(response.data)
         return response.data
     } catch (error) {
         const message = error.response?.data?.message || error.message || 'Failed to add service'
-        throw new Error(message)
+        throw new Error("error is " + message)
     }
 }
 
-export const getService = async () => {
+export const getService = async (id) => {
     try {
-        const response = await axiosInstance.get('/service/get')
+        const response = await axiosInstance.get(`/service/${id}`)
         console.log(response.data)
         return response.data
     } catch (error) {

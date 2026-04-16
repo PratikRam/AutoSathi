@@ -7,20 +7,20 @@ const useServiceStore = create((set) => ({
   error: null,
 
   // ACTIONS
-  setVehicles: (services) => set({ services }),
+  setServices: (services) => set({ services }),
   setLoading: (loading) => set({ loading }),
   setError: (error) => set({ error }),
 
   // Add Service to list
   addServiceToList: (newService) =>
     set((state) => ({
-      vehicles: [...state.services, newService]
+      services: [...state.services, newService]
     })),
 
   // Delete service from list
-  removeVehicle: (serviceId) =>
+  removeService: (serviceId) =>
     set((state) => ({
-      vehicles: state.services.filter((service) => service._id !== serviceId)
+      services: state.services.filter((service) => service._id !== serviceId)
     })),
 
   // Clear all services

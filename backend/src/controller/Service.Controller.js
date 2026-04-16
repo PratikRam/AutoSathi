@@ -32,7 +32,7 @@ const getServicesController = async (req, res) => {
 
 const deleteService = async (req, res) => {
     try {
-        const service = await ServiceModel.findById(req.params.id)
+        const service = await ServiceModel.findById(req.params.id).sort({ createdAt: 1 })
 
         if (!service) {
             return res.status(404).json({ message: 'Service not found' })

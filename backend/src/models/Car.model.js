@@ -14,16 +14,17 @@ const carSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    // generalServiceDate: {
-    //     type: String
-    // },
-    // purchaseDate: {
-    //     type: Date
-    // },
-    // insuranceExpiry: {
-    //     type: Date,
-    //     required: true
-    // },
+    generalServiceDate: {
+        type: String,
+        required: true
+    },
+    purchaseDate: {
+        type: Date
+    },
+    insuranceExpiry: {
+        type: Date,
+        required: true
+    },
     pucExpiry: {
         type: Date,
         required: true

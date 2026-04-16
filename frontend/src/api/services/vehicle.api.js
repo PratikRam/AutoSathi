@@ -24,3 +24,14 @@ export const getVehicle = async () => {
         throw new Error(message)
     }
 }
+
+export const deleteVehicle = async (id) => {
+    try {
+        const responce = await axiosInstance.delete(`/car/${id}`)
+        console.log(responce.data);
+        return responce.data
+    } catch (error) {
+        const message = error.response?.data?.message || error.message || 'Failed to delete vehicle'
+        throw new Error(message)
+    }
+}
