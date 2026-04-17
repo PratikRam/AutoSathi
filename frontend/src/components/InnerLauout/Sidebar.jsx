@@ -1,10 +1,29 @@
 import { logout } from '@/api/services/auth.api'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Navigate, NavLink, useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
+import { CircleUserRound } from 'lucide-react'
+import { CheckAuth } from '@/api/services/checkAuth.api'
 
 const Sidebar = () => {
+
+  const [name, setName] = useState('')
+
   const navigate = useNavigate()
+
+  const handleProfileClick = () => {
+    navigate('/profile')
+  }
+
+  const user = async () => {
+    const user = await CheckAuth()
+    const { name, email } = user.user
+    setName(name.charAt(0).toUpperCase() + name.slice(1))
+  }
+
+  useEffect(() => {
+    user()
+  }, [])
 
   const menuItems = [
     { label: 'My Vehicles', path: '/myvehicles' },
@@ -32,15 +51,21 @@ const Sidebar = () => {
           </NavLink>
         ))}
       </nav>
+
       <Button
-        className='px-4 py-3 text-left font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg absolute bottom-5'
+        className='px-4 py-3 text-left font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg absolute bottom-20 cursor-pointer'
         onClick={async () => {
           await logout()
-          navigate('./login')
+          navigate('/')
         }}
+
       >
         Log out
       </Button>
+      <div className='flex items-center gap-2 absolute bottom-5'>
+        <CircleUserRound className='cursor-pointer h-8 w-8 hover:bg-gray-200 rounded-full transition-all duration-200 hover:scale-110' />
+        <p className=''>{name}</p>
+      </div>
     </div >
   )
 }

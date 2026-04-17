@@ -12,7 +12,8 @@ const carSchema = new mongoose.Schema({
     },
     registrationNumber: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     generalServiceDate: {
         type: String,
@@ -29,9 +30,10 @@ const carSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    // imageUrl: {
-    //     type: String
-    // }
+    image: {
+        type: String,
+        required: true
+    }
 }, { timestamps: true })
 
 const Car = mongoose.model('Car', carSchema)

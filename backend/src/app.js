@@ -5,8 +5,10 @@ const CarRoutes = require('./routes/car.Routes')
 const ServiceRoutes = require('./routes/Service.Routes')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
+const { connectCloudinary } = require('./config/cloudinary')    
 
 const app = express();
+connectCloudinary();
 
 // const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
 

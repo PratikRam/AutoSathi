@@ -4,7 +4,13 @@ import { axiosInstance } from "../axios";
 
 export const addVehicle = async (data) => {
     try {
-        const responce = await axiosInstance.post('/car/add', data)
+        const responce = await axiosInstance.post('/car/add', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            withCredentials: true
+            
+        })
         console.log(responce.data);
         return responce.data
     } catch (error) {

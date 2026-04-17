@@ -11,7 +11,6 @@ const MyVehicle = () => {
     useVehicleStore()
 
   const navigate = useNavigate()
-  console.log(vehicles)
 
   const navigateHandler = vehicleId => {
     navigate(`/serviceshistory/${vehicleId}`)
@@ -39,6 +38,7 @@ const MyVehicle = () => {
       setLoading(true)
       const response = await getVehicle()
       setVehicles(response.cars)
+      console.log("response.cars is", response.cars);
       setError(null)
     } catch (error) {
       setError(error.message)
@@ -61,7 +61,7 @@ const MyVehicle = () => {
       </p>
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
         {loading ? (
-          <Skeleton className='col-span-full text-center text-gray-500' />
+          <Skeleton className='col-span-full text-center text-gray-500 h-64 w-full ' />
         ) : // <p className='col-span-full text-center text-gray-500'>
           //   Loading vehicles...
           // </p>
@@ -70,15 +70,17 @@ const MyVehicle = () => {
               <>
                 <div
                   key={vehicle._id}
-                  className='bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow'
+                  className='bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow '
                 >
+                  <img src={vehicle.image} alt="" className='w-90 h-60 object-cover rounded-lg mb-2 transition-all duration-200 hover:scale-101' />
                   <div className='flex justify-between items-center mb-2'>
-                    <h3 className='text-lg font-semibold text-gray-900 '>
+
+                    <h3 className='text-lg font-semibold text-gray-900'>
                       {vehicle.vehicleName}
                     </h3>
                     <button
                       onClick={() => handleDelete(vehicle._id)}
-                      className='bg-white p-3 rounded-full text-gray-800 hover:bg-red-500 hover:text-white transition shadow-sm'
+                      className='bg-white p-3 rounded-full text-gray-800 hover:bg-red-500 hover:text-white transition shadow-sm cursor-pointer'
                       title='Delete File'
                     >
                       <Trash2 size={20} />
@@ -87,27 +89,27 @@ const MyVehicle = () => {
 
 
                   <p className='text-sm text-gray-600'>
-                    <span className='font-medium'>Purchase Date:</span>
+                    <span className='font-medium'>Purchase Date : </span>
                     {new Date(vehicle.purchaseDate).toLocaleDateString()}
                   </p>
                   <p className='text-sm text-gray-600 mb-1'>
-                    <span className='font-medium'>Registration:</span>
+                    <span className='font-medium'>Registration : </span>
                     {vehicle.registrationNumber}
                   </p>
                   <p className='text-sm text-gray-600'>
-                    <span className='font-medium'>General Service Date:</span>
+                    <span className='font-medium'>General Service Date : </span>
                     {new Date(vehicle.generalServiceDate).toLocaleDateString()}
                   </p>
                   <p className='text-sm text-gray-600'>
-                    <span className='font-medium'>Insurance Expiry:</span>
+                    <span className='font-medium'>Insurance Expiry : </span>
                     {new Date(vehicle.insuranceExpiry).toLocaleDateString()}
                   </p>
                   <p className='text-sm text-gray-600'>
-                    <span className='font-medium'>PUC Expiry:</span>
+                    <span className='font-medium'>PUC Expiry : </span>
                     {new Date(vehicle.pucExpiry).toLocaleDateString()}
                   </p>
                   <Button
-                    className='bg-sky-500 mt-2'
+                    className='bg-sky-500 mt-2 cursor-pointer'
                     onClick={() => navigateHandler(`${vehicle._id}`)}
                   >
                     See Service details

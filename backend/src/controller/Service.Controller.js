@@ -22,7 +22,7 @@ const addServiceController = async (req, res) => {
 
 const getServicesController = async (req, res) => {
     try {
-        const services = await ServiceModel.find({ carId: req.params.carId });
+        const services = await ServiceModel.find({ carId: req.params.carId }).sort({ createdAt: -1 });
         res.status(200).json({ services });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching services', error });
@@ -32,7 +32,7 @@ const getServicesController = async (req, res) => {
 
 const deleteService = async (req, res) => {
     try {
-        const service = await ServiceModel.findById(req.params.id).sort({ createdAt: 1 })
+        const service = await ServiceModel.findById(req.params.id)
 
         if (!service) {
             return res.status(404).json({ message: 'Service not found' })
