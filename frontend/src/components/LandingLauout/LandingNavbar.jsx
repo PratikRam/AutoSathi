@@ -1,7 +1,7 @@
 import { Button } from '../ui/button'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { CarFront, Menu, X } from 'lucide-react'
 
 const LandingNavbar = () => {
   const navigate = useNavigate()
@@ -29,8 +29,9 @@ const LandingNavbar = () => {
   return (
     <>
       <div className='flex justify-between items-center p-4 bg-gray-400 rounded sticky top-0 z-50'>
-        <p className='font-medium cursor-pointer ml-2 md:ml-6'>
-          <span className='text-blue-600 text-xl font-bold'>Auto</span>Sathi
+        <p className='font-medium cursor-pointer ml-2 md:ml-6 flex items-center font-semibold text-lg'>
+          <span><CarFront className='text-blue-600 mr-2 h-7 w-7' /></span>
+          Auto<span className='text-blue-600'>Sathi</span>
         </p>
 
         {/* Desktop Menu */}
@@ -64,7 +65,7 @@ const LandingNavbar = () => {
             About Us
           </NavLink>
         </div>
-        
+
         <div className='hidden md:block mr-2 md:mr-6'>
           <Button className='cursor-pointer' onClick={handleGetStarted}>
             Login
