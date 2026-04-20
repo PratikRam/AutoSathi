@@ -9,7 +9,7 @@ export const addVehicle = async (data) => {
                 'Content-Type': 'multipart/form-data',
             },
             withCredentials: true
-            
+
         })
         console.log(responce.data);
         return responce.data

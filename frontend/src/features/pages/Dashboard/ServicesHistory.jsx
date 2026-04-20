@@ -2,7 +2,7 @@ import { getService } from '@/api/services/services.api'
 import { Button } from '@/components/ui/button'
 import useServiceStore from '@/store/servicesStore'
 import useVehicleStore from '@/store/vehicleStore'
-import { ChevronRight, CircleChevronRight, Trash2 } from 'lucide-react'
+import { ChevronRight, CircleChevronRight, Loader2, Trash2 } from 'lucide-react'
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { deleteService } from '@/api/services/services.api'
@@ -90,9 +90,9 @@ const ServicesHistory = () => {
 
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4 w-full'>
         {loading ? (
-          <p className='col-span-full text-center text-gray-500'>
-            Loading Services...
-          </p>
+          <div className='flex items-center justify-center h-64 w-full'>
+            <Loader2 className='animate-spin h-12 w-12 text-blue-600' />
+          </div>
         ) : services.length > 0 ? (<>
 
           {services.map(service => (

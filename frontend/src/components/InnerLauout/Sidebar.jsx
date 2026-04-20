@@ -2,7 +2,7 @@ import { logout } from '@/api/services/auth.api'
 import React, { useEffect, useState } from 'react'
 import { Navigate, NavLink, useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
-import { CircleUserRound } from 'lucide-react'
+import { CarFront, CircleUserRound } from 'lucide-react'
 import { CheckAuth } from '@/api/services/checkAuth.api'
 
 const Sidebar = () => {
@@ -35,7 +35,13 @@ const Sidebar = () => {
 
   return (
     <div className='w-64 bg-gray-100 border-r border-gray-200 min-h-screen p-5 sticky top-0 h-screen'>
-      <h2 className='text-2xl font-semibold text-gray-900 mb-8'>Dashboard</h2>
+      <h2 className='text-2xl font-semibold text-gray-900 mb-8'>
+        <div className='flex items-center'>
+          <CarFront className='text-blue-600 mr-2 h-8 w-8' />
+          Auto<span className='text-blue-600'>
+            Sathi </span>
+        </div>
+      </h2>
       <nav className='flex flex-col gap-2 '>
         {menuItems.map(item => (
           <NavLink
@@ -63,7 +69,9 @@ const Sidebar = () => {
         Log out
       </Button>
       <div className='flex items-center gap-2 absolute bottom-5'>
-        <CircleUserRound className='cursor-pointer h-8 w-8 hover:bg-gray-200 rounded-full transition-all duration-200 hover:scale-110' />
+        <CircleUserRound
+          onClick={handleProfileClick}
+          className='cursor-pointer h-8 w-8 hover:bg-gray-200 rounded-full transition-all duration-200 hover:scale-110' />
         <p className=''>{name}</p>
       </div>
     </div >

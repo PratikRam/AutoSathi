@@ -11,6 +11,7 @@ import MyVehicle from './features/pages/Dashboard/MyVehicle'
 import { useUserData } from './contexts/UserContext'
 import ServicesHistory from './features/pages/Dashboard/ServicesHistory'
 import NotFoundPage from './features/pages/error/Notfoundpage'
+import { Loader2 } from 'lucide-react'
 
 const App = () => {
   const { isAuthenticated, authLoading } = useUserData()
@@ -18,7 +19,7 @@ const App = () => {
   if (authLoading) {
     return (
       <div className='flex items-center justify-center h-screen'>
-        Loading...
+        <Loader2 className='animate-spin h-12 w-12 text-blue-600' />
       </div>
     )
   }
@@ -36,8 +37,8 @@ const App = () => {
 
 
 
-    {/* ==>> Private Routes */}
-    
+      {/* ==>> Private Routes */}
+
       <Route
         path='/login'
         element={!isAuthenticated ? <Login /> : <Navigate to='/myvehicles' />}
