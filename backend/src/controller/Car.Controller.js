@@ -68,6 +68,25 @@ const getCarsController = async (req, res) => {
     }
 }
 
+// renew insurance and puc
+const renewInsuranceAndPucController = async (req, res) => {
+    try {
+        const carId = req.params.id
+        const updatedCar = await car.findByIdAndUpdate(carId, req.body, { new: true })
+        if (!updatedCar) {
+            return res.status(404).json({ message: 'Car not found' })
+        }
+        res.status(200).json({
+            message: "Car updated successfully",
+            "this car updated": updatedCar
+        })
+    }
+    catch (error) {
+        console.log(error.message);
+        res.status(500).json({ message: 'Server error' })
+    }
+}
+
 // Delete a car by ID
 const deleteCarController = async (req, res) => {
     try {
@@ -90,5 +109,6 @@ const deleteCarController = async (req, res) => {
 module.exports = {
     addCarController,
     getCarsController,
-    deleteCarController
+    deleteCarController,
+    renewInsuranceAndPucController
 }

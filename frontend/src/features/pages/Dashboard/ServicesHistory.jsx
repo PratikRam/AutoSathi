@@ -61,18 +61,18 @@ const ServicesHistory = () => {
   const navigate = useNavigate()
   return (
     <div className='p-6 flex flex-col gap-4'>
-      <div className='flex justify-between bg-gray-100 p-4 rounded-lg'>
+      <div className='flex justify-between bg-gray-100 p-4 rounded-lg items-center'>
 
         <div className='flex flex-col'> <h1 className='text-3xl font-bold text-gray-900 mb-6'>Service History</h1>
           <p className='text-gray-900 mb-6 text-sm justify-center '>
-            <span className='cursor-pointer opacity-80' onClick={() => navigate('/myvehicles')}>My Vehicle</span>
+            <span className='cursor-pointer opacity-80' onClick={() => navigate('/myvehicles')}>My Vehicles</span>
             <ChevronRight className='inline-block' size={15} />
             {vehicle.vehicleName}
             <ChevronRight className='inline-block' size={15} />
             <span className=' font-bold'>Service History</span>
           </p>
         </div>
-
+        <h1 className='text-gray-900 mb-6 text-sm font-bold'>Total Service : {services.length}</h1>
         <h1 className='text-gray-900 mb-6 text-sm'>Total Maintenance <br /><span className='text-xl font-bold'>₹{AllCost}</span></h1>
         <Button
           onClick={() => navigate(`/add-service/${id}`)}
@@ -83,8 +83,10 @@ const ServicesHistory = () => {
       </div>
 
       <div className='flex'>
-        <img src={vehicleImg} alt="nahi mila" className='w-1/2 h-auto rounded-lg opacity-90 ' />
-        <div className='flex-1 text-center'>Next Critical Service</div>
+        <div className='flex-3 overflow-hidden rounded-lg'>
+          <img src={vehicleImg} alt="nahi mila" className='w-1/2 h-auto opacity-90 hover:scale-105 transition-all duration-400 ease-in-out' />
+        </div>
+        <div className='flex-1 '>Next Critical Service</div>
         {/* <div className='flex-1'></div> */}
       </div>
 

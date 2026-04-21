@@ -77,7 +77,7 @@ const AddVehicle = () => {
               <h3 className='font-semibold text-lg leading-tight mb-1'>
                 <span className='text-blue-500 font-bold shadow-white'>
                   AutoSathi
-                </span>{' '}
+                </span>
                 is the soul of performance.
               </h3>
             </div>
