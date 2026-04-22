@@ -13,7 +13,9 @@ import {
   Trash2,
   TriangleAlert
 } from 'lucide-react'
+import { Input } from 'postcss'
 import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
 const MyVehicle = () => {
@@ -21,6 +23,8 @@ const MyVehicle = () => {
     useVehicleStore()
 
   const [activeMenu, setActiveMenu] = useState(null)
+
+  const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
   const navigate = useNavigate()
 
@@ -119,21 +123,24 @@ const MyVehicle = () => {
                             onClick={() => handleUpdateVehicle(vehicle._id)}
                             className="bg-white text-black cursor-pointer hover:bg-gray-200 w-full h-10"
                           >
-                            🔁 Update Vehicle
-                          </Button>
-                          <Button
-                            onClick={() => handleRenewPUC(vehicle._id)}
-                            className="bg-white text-black cursor-pointer hover:bg-gray-200 w-full h-10"
-                          >
-                            🔁 New PucExpiry
+                            🔁 Change Vehicle Info
                           </Button>
 
-                          <Button
-                            onClick={() => handleRenewInsurance(vehicle._id)}
+                          {/* <Input
+                            type="date"
                             className="bg-white text-black cursor-pointer hover:bg-gray-200 w-full h-10"
+                            {...register("pucExpiry", { required: true })}
+                          >
+                            🔁 New PucExpiry
+                          </Input>
+
+                          <Input
+                            type="date"
+                            className="bg-white text-black cursor-pointer hover:bg-gray-200 w-full h-10"
+                            {...register("insuranceExpiry", { required: true })}
                           >
                             🔁 New InsuranceDate
-                          </Button>
+                          </Input> */}
 
                           <Button
                             onClick={() => handleDelete(vehicle._id)}
@@ -159,7 +166,7 @@ const MyVehicle = () => {
                     <span className='font-medium'>General Service Date : </span>
                     {new Date(vehicle.generalServiceDate).toLocaleDateString()}
                   </p> */}
-                  <p className='text-sm text-gray-600 mb-1 bg-gray-100 p-1 rounded-md p-3'>
+                  <div className='text-sm text-gray-600 mb-1 bg-gray-100 p-1 rounded-md p-3'>
                     <div className='flex justify-between items-center'>
                       <span className='font-medium'>
                         {vehicle.insuranceRemainingDays <= 0 ? (
@@ -194,9 +201,9 @@ const MyVehicle = () => {
                         </span>
                       )}
                     </div>
-                  </p>
+                  </div>
 
-                  <p className='text-sm text-gray-600 mb-1 bg-gray-100 p-1 rounded-md p-3'>
+                  <div className='text-sm text-gray-600 mb-1 bg-gray-100 p-1 rounded-md p-3'>
                     <div className='flex justify-between items-center '>
                       <span className='font-medium '>
                         {vehicle.pucRemainingDays <= 0 ? (
@@ -231,7 +238,7 @@ const MyVehicle = () => {
                         </span>
                       )}
                     </div>
-                  </p>
+                  </div>
                   <Button
                     className='bg-sky-500 mt-2 cursor-pointer w-full'
                     onClick={() => navigateHandler(`${vehicle._id}`)}
