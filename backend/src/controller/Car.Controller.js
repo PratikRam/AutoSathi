@@ -8,7 +8,7 @@ const addCarController = async (req, res) => {
         // console.log("file:", req.file);
         // console.log("body:", req.body);
         const image = req.file.buffer;
-        
+
         if (!image) {
             return res.status(400).json({ message: 'Image is required' })
         }
@@ -105,6 +105,7 @@ const deleteCarController = async (req, res) => {
         res.status(500).json({ message: 'Server error' })
     }
 }
+
 
 module.exports = {
     addCarController,

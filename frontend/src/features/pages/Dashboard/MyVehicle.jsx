@@ -24,7 +24,12 @@ const MyVehicle = () => {
 
   const [activeMenu, setActiveMenu] = useState(null)
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm()
 
   const navigate = useNavigate()
 
@@ -85,48 +90,47 @@ const MyVehicle = () => {
         {loading ? (
           <Loader2 className='animate-spin h-12 w-12 text-blue-600' />
         ) : // <p className='col-span-full text-center text-gray-500'>
-          //   Loading vehicles...
-          // </p>
-          vehiclesWithDays.length > 0 ? (
-            vehiclesWithDays.map(vehicle => (
-              <>
-                <div
-                  key={vehicle._id}
-                  className='bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow '
-                >
-                  <div className='overflow-hidden rounded-lg '>
-                    <img
-                      src={vehicle.image}
-                      alt=''
-                      className='w-90 h-60 object-cover mb-2 transition-all duration-300 hover:scale-105'
-                    />
-                  </div>
-                  <div className='flex justify-between items-center mb-2'>
-                    <h3 className='text-lg font-semibold text-gray-900'>
-                      {vehicle.vehicleName}
-                    </h3>
-                    <h1 className='text-sm text-gray-900 '>
-                      {vehicle.registrationNumber}
-                    </h1>
-                    <div className="relative">
-                      <button
-                        onClick={() => openPopup(vehicle._id)}
-                        className="bg-white p-2 rounded-full text-gray-800 hover:bg-gray-500 hover:text-white transition shadow-sm cursor-pointer"
-                      >
-                        <EllipsisVertical size={20} />
-                      </button>
+        //   Loading vehicles...
+        // </p>
+        vehiclesWithDays.length > 0 ? (
+          vehiclesWithDays.map(vehicle => (
+            <>
+              <div
+                key={vehicle._id}
+                className='bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow '
+              >
+                <div className='overflow-hidden rounded-lg '>
+                  <img
+                    src={vehicle.image}
+                    alt=''
+                    className='w-90 h-60 object-cover mb-2 transition-all duration-300 hover:scale-105'
+                  />
+                </div>
+                <div className='flex justify-between items-center mb-2'>
+                  <h3 className='text-lg font-semibold text-gray-900'>
+                    {vehicle.vehicleName}
+                  </h3>
+                  <h1 className='text-sm text-gray-900 '>
+                    {vehicle.registrationNumber}
+                  </h1>
+                  <div className='relative'>
+                    <button
+                      onClick={() => openPopup(vehicle._id)}
+                      className='bg-white p-2 rounded-full text-gray-800 hover:bg-gray-500 hover:text-white transition shadow-sm cursor-pointer'
+                    >
+                      <EllipsisVertical size={20} />
+                    </button>
 
-                      {activeMenu === vehicle._id && (
-                        <Card className="absolute right-0 w-44 bg-white border rounded-lg shadow-lg gap-2 p-2">
+                    {activeMenu === vehicle._id && (
+                      <Card className='absolute right-0 w-44 bg-white border rounded-lg shadow-lg gap-2 p-2'>
+                        <Button
+                          // onClick={}
+                          className='bg-white text-black cursor-pointer hover:bg-gray-200 w-full h-10'
+                        >
+                          🔁 Change Vehicle Info
+                        </Button>
 
-                          <Button
-                            onClick={() => handleUpdateVehicle(vehicle._id)}
-                            className="bg-white text-black cursor-pointer hover:bg-gray-200 w-full h-10"
-                          >
-                            🔁 Change Vehicle Info
-                          </Button>
-
-                          {/* <Input
+                        {/* <Input
                             type="date"
                             className="bg-white text-black cursor-pointer hover:bg-gray-200 w-full h-10"
                             {...register("pucExpiry", { required: true })}
@@ -142,124 +146,127 @@ const MyVehicle = () => {
                             🔁 New InsuranceDate
                           </Input> */}
 
-                          <Button
-                            onClick={() => handleDelete(vehicle._id)}
-                            className="bg-white text-red-600 cursor-pointer hover:bg-red-200 w-full h-10"
-                          >
-                            <Trash2 size={20} className='inline-block mr-1 items-center' />Delete
-                          </Button>
-
-                        </Card>
-                      )}
-                    </div>
+                        <Button
+                          onClick={() => handleDelete(vehicle._id)}
+                          className='bg-white text-red-600 cursor-pointer hover:bg-red-200 w-full h-10'
+                        >
+                          <Trash2
+                            size={20}
+                            className='inline-block mr-1 items-center'
+                          />
+                          Delete
+                        </Button>
+                      </Card>
+                    )}
                   </div>
+                </div>
 
-                  {/* <p className='text-sm text-gray-600'>
+                {/* <p className='text-sm text-gray-600'>
                   <span className='font-medium'>Purchase Date : </span>
                   {new Date(vehicle.purchaseDate).toLocaleDateString()}
                 </p> */}
-                  {/* <p className='text-sm text-gray-600 mb-1'>
+                {/* <p className='text-sm text-gray-600 mb-1'>
                     <span className='font-medium'>Registration : </span>
                     {vehicle.registrationNumber}
                   </p> */}
-                  {/* <p className='text-sm text-gray-600'>
+                {/* <p className='text-sm text-gray-600'>
                     <span className='font-medium'>General Service Date : </span>
                     {new Date(vehicle.generalServiceDate).toLocaleDateString()}
                   </p> */}
-                  <div className='text-sm text-gray-600 mb-1 bg-gray-100 p-1 rounded-md p-3'>
-                    <div className='flex justify-between items-center'>
-                      <span className='font-medium'>
-                        {vehicle.insuranceRemainingDays <= 0 ? (
-                          <span className='text-red-500 flex items-center gap-2'>
-                            <TriangleAlert />
-                            Insurance Policy
-                          </span>
-                        ) : vehicle.insuranceRemainingDays < 7 ? (
-                          <span className='text-yellow-500 flex items-center gap-2'>
-                            <ClockAlert />
-                            Insurance Due
-                          </span>
-                        ) : (
-                          <span className='text-green-500 flex items-center gap-2'>
-                            <CheckCircle />
-                            Insurance Policy
-                          </span>
-                        )}
-                      </span>
-
+                <div className='text-sm text-gray-600 mb-1 bg-gray-100 p-1 rounded-md p-3'>
+                  <div className='flex justify-between items-center'>
+                    <span className='font-medium'>
                       {vehicle.insuranceRemainingDays <= 0 ? (
-                        <span className='text-red-500 font-semibold'>
-                          Expired
+                        <span className='text-red-500 flex items-center gap-2'>
+                          <TriangleAlert />
+                          Insurance Policy
                         </span>
                       ) : vehicle.insuranceRemainingDays <= 7 ? (
-                        <span className='text-yellow-500 font-semibold'>
-                          Expiring Soon ({vehicle.insuranceRemainingDays} days)
+                        <span className='text-yellow-500 flex items-center gap-2'>
+                          <ClockAlert />
+                          Insurance Due
                         </span>
                       ) : (
-                        <span className='text-green-500 font-semibold'>
-                          Valid
+                        <span className='text-green-500 flex items-center gap-2'>
+                          <CheckCircle />
+                          Insurance Policy
                         </span>
                       )}
-                    </div>
-                  </div>
+                    </span>
 
-                  <div className='text-sm text-gray-600 mb-1 bg-gray-100 p-1 rounded-md p-3'>
-                    <div className='flex justify-between items-center '>
-                      <span className='font-medium '>
-                        {vehicle.pucRemainingDays <= 0 ? (
-                          <span className='text-red-500 flex items-center gap-2'>
-                            <TriangleAlert />
-                            PUC Expiry
-                          </span>
-                        ) : vehicle.pucRemainingDays < 7 ? (
-                          <span className='text-yellow-500 flex items-center gap-2'>
-                            <ClockAlert />
-                            PUC Due
-                          </span>
-                        ) : (
-                          <span className='text-green-500 flex items-center gap-2'>
-                            <Leaf />
-                            PUC Expiry
-                          </span>
-                        )}
+                    {vehicle.insuranceRemainingDays <= 0 ? (
+                      <span className='text-red-500 font-semibold'>
+                        Expired
                       </span>
+                    ) : vehicle.insuranceRemainingDays <= 7 ? (
+                      <span className='text-yellow-500 font-semibold'>
+                        Expiring Soon ({vehicle.insuranceRemainingDays} days)
+                      </span>
+                    ) : (
+                      <span className='text-green-500 font-semibold'>
+                        Valid
+                      </span>
+                    )}
+                  </div>
+                </div>
 
+                <div className='text-sm text-gray-600 mb-1 bg-gray-100 p-1 rounded-md p-3'>
+                  <div className='flex justify-between items-center '>
+                    <span className='font-medium '>
                       {vehicle.pucRemainingDays <= 0 ? (
-                        <span className='text-red-500 font-semibold'>
-                          Expired
+                        <span className='text-red-500 flex items-center gap-2'>
+                          <TriangleAlert />
+                          PUC Expiry
                         </span>
-                      ) : vehicle.pucRemainingDays <= 7 ? (
-                        <span className='text-yellow-500 font-semibold'>
-                          Expiring Soon ({vehicle.pucRemainingDays} days)
+                      ) : vehicle.pucRemainingDays < 7 ? (
+                        <span className='text-yellow-500 flex items-center gap-2'>
+                          <ClockAlert />
+                          PUC Due
                         </span>
                       ) : (
-                        <span className='text-green-500 font-semibold'>
-                          Valid
+                        <span className='text-green-500 flex items-center gap-2'>
+                          <Leaf />
+                          PUC Expiry
                         </span>
                       )}
-                    </div>
+                    </span>
+
+                    {vehicle.pucRemainingDays <= 0 ? (
+                      <span className='text-red-500 font-semibold'>
+                        Expired
+                      </span>
+                    ) : vehicle.pucRemainingDays <= 7 ? (
+                      <span className='text-yellow-500 font-semibold'>
+                        Expiring Soon ({vehicle.pucRemainingDays} days)
+                      </span>
+                    ) : (
+                      <span className='text-green-500 font-semibold'>
+                        Valid
+                      </span>
+                    )}
                   </div>
-                  <Button
-                    className='bg-sky-500 mt-2 cursor-pointer w-full'
-                    onClick={() => navigateHandler(`${vehicle._id}`)}
-                  >
-                    View Service History
-                  </Button>
                 </div>
-                <>
-                  {/* <div
+                <Button
+                  className='bg-sky-500 mt-2 cursor-pointer w-full'
+                  onClick={() => navigateHandler(`${vehicle._id}`)}
+                >
+                  View Service History
+                </Button>
+              </div>
+              <>
+                {/* <div
                     className='bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow'
                   >
                     <CirclePlus />
                   </div> */}
-                </>
               </>
-            ))
-          ) : (
-            <div className='col-span-full text-center py-12'>
-              no vehicles added
-            </div>
-          )}
+            </>
+          ))
+        ) : (
+          <div className='col-span-full text-center py-12'>
+            no vehicles added
+          </div>
+        )}
       </div>
       <Card className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 h-80 w-full flex items-center justify-center bg-gray-100 '>
         <CirclePlus

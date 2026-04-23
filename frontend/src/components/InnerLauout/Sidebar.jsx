@@ -1,24 +1,30 @@
 import { logout } from '@/api/services/auth.api'
 import React, { useEffect, useState } from 'react'
-import { Navigate, NavLink, useNavigate } from 'react-router-dom'
-import { Button } from '../ui/button'
-import { CarFront, CircleUserRound } from 'lucide-react'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { CarFront, CircleUserRound, Menu, X, LogOut } from 'lucide-react'
 import { CheckAuth } from '@/api/services/checkAuth.api'
 
 const Sidebar = () => {
-
   const [name, setName] = useState('')
+  const [isOpen, setIsOpen] = useState(false)
 
   const navigate = useNavigate()
 
   const handleProfileClick = () => {
     navigate('/profile')
+    setIsOpen(false)
   }
 
   const user = async () => {
-    const user = await CheckAuth()
-    const { name, email } = user.user
-    setName(name.charAt(0).toUpperCase() + name.slice(1))
+    try {
+      const resp = await CheckAuth()
+      if (resp?.user?.name) {
+        const { name } = resp.user
+        setName(name.charAt(0).toUpperCase() + name.slice(1))
+      }
+    } catch (error) {
+      console.error("Auth check failed:", error)
+    }
   }
 
   useEffect(() => {
@@ -29,52 +35,97 @@ const Sidebar = () => {
     { label: 'My Vehicles', path: '/myvehicles' },
     { label: 'Add Vehicle', path: '/addvehicle' },
     { label: 'All Maintenances', path: '/allmaintenances' }
-    // { label: 'Services', path: '/servicevehicle' },
-    // { label: 'New Service Entry', path: '/newserviceentry' }
   ]
 
+  const handleNavClick = () => {
+    setIsOpen(false)
+  }
+
   return (
-    <div className='w-64 bg-gray-100 border-r border-gray-200 min-h-screen p-5 sticky top-0 h-screen'>
-      <h2 className='text-2xl font-semibold text-gray-900 mb-8'>
-        <div className='flex items-center'>
-          <CarFront className='text-blue-600 mr-2 h-8 w-8' />
-          Auto<span className='text-blue-600'>
-            Sathi </span>
-        </div>
-      </h2>
-      <nav className='flex flex-col gap-2 '>
-        {menuItems.map(item => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) =>
-              isActive
-                ? 'px-4 py-3 text-left font-medium font-semibold text-blue-600 rounded-lg transition-all duration-300 hover:bg-blue-100 hover:text-blue-600 hover:translate-x-1 active:bg-blue-200'
-                : 'px-4 py-3 text-left font-medium text-gray-700 hover:bg-gray-200 rounded-lg'
-            }
-          >
-            {item.label}
-          </NavLink>
-        ))}
-      </nav>
-
-      <Button
-        className='px-4 py-3 text-left font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg absolute bottom-20 cursor-pointer'
-        onClick={async () => {
-          await logout()
-          navigate('/')
-        }}
-
+    <>
+      {/* Floating Mobile Toggle Button */}
+      <button 
+        className="md:hidden fixed top-5 bg-white right-5 z-[60] p-2.5 rounded-xl shadow-md border border-gray-100 text-gray-700 hover:text-blue-600 transition-all focus:outline-none"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Toggle Menu"
       >
-        Log out
-      </Button>
-      <div className='flex items-center gap-2 absolute bottom-5'>
-        <CircleUserRound
-          onClick={handleProfileClick}
-          className='cursor-pointer h-8 w-8 hover:bg-gray-200 rounded-full transition-all duration-200 hover:scale-110' />
-        <p className=''>{name}</p>
-      </div>
-    </div >
+        {isOpen ? <X size={24} className="text-gray-900" /> : <Menu size={24} />}
+      </button>
+
+      {/* Mobile Backdrop Overlay */}
+      {isOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-slate-900/40 z-[50] backdrop-blur-sm transition-opacity"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Sidebar Container */}
+      <div className={`
+        fixed md:sticky top-0 left-0 h-[100dvh] z-[55]
+        w-72 md:w-64 bg-slate-50 border-r border-slate-200 p-6 flex flex-col
+        transition-transform duration-300 ease-in-out shrink-0 overflow-y-auto
+        ${isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full shadow-none'} 
+        md:translate-x-0 md:shadow-none
+      `}>
+        
+        {/* Logo Header */}
+        <h2 className='text-2xl font-bold text-gray-900 mb-10 mt-2 flex items-center gap-2.5'>
+          <div className="bg-blue-600 p-2 rounded-xl text-white shadow-sm flex items-center justify-center">
+             <CarFront size={22} className="stroke-[2.5]" />
+          </div>
+          <span className="tracking-tight">Auto<span className='text-blue-600'>Sathi</span></span>
+        </h2>
+
+        {/* Navigation Links */}
+        <nav className='flex flex-col gap-2 flex-grow'>
+          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 px-1">Menu</span>
+          {menuItems.map(item => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              onClick={handleNavClick}
+              className={({ isActive }) =>
+                isActive
+                  ? 'px-4 py-3.5 text-[15px] font-bold text-blue-700 bg-blue-100/50 rounded-2xl transition-all border border-blue-200/50 flex items-center shadow-sm'
+                  : 'px-4 py-3.5 text-[15px] font-semibold text-gray-600 hover:text-blue-600 hover:bg-slate-200/50 rounded-2xl transition-all flex items-center'
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+
+        {/* Footer Area (Logout & Profile) */}
+        <div className="flex flex-col gap-4 mt-8 pt-8 border-t border-slate-200">
+          
+          <div 
+            onClick={handleProfileClick}
+            className='flex items-center gap-3 px-4 py-3 cursor-pointer rounded-2xl bg-white border border-gray-100 shadow-sm hover:border-blue-300 hover:shadow-md transition-all group'
+          >
+            <div className="bg-slate-100 text-gray-600 p-2 rounded-full group-hover:bg-blue-600 group-hover:text-white transition-colors">
+              <CircleUserRound size={20} />
+            </div>
+            <div className="flex flex-col overflow-hidden">
+              <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider leading-none mb-1">Account</span>
+              <span className='text-[15px] font-bold text-gray-900 leading-none truncate w-28'>{name || 'User'}</span>
+            </div>
+          </div>
+
+          <button
+            className='w-full flex items-center justify-center gap-2 text-red-600 hover:bg-red-600 hover:text-white bg-red-50 border border-red-100 shadow-sm font-bold text-[15px] h-12 rounded-2xl transition-all cursor-pointer'
+            onClick={async () => {
+              await logout()
+              navigate('/')
+            }}
+          >
+            <LogOut size={18} strokeWidth={2.5}/>
+            Log out
+          </button>
+
+        </div>
+      </div >
+    </>
   )
 }
 

@@ -8,7 +8,7 @@ const checkExpiry = async () => {
     console.log("⏰ Running expiry check:", new Date().toLocaleString());
 
     try {
-        const cars = await Car.find();
+        const cars = await Car.find()
 
         for (const car of cars) {
             const user = await User.findById(car.userId);
@@ -28,6 +28,18 @@ const checkExpiry = async () => {
                 );
                 console.log(`✅ Insurance email sent → ${user.email} (${car.vehicleName}) — ${insuranceremainingdays} days left`);
             }
+            else if (insuranceremainingdays < 0) {
+                await sendExpiryEmail(  
+                    user.email,
+                    user.name,
+                    car.vehicleName,
+                    car.registrationNumber,
+                    "Insurance",
+                    "-1"
+                );
+                console.log(`✅ Insurance email sent → ${user.email} (${car.vehicleName}) — Expired`);
+            }
+
 
             if (pucremainingdays !== null && pucremainingdays >= 0 && pucremainingdays <= 7) {
 
@@ -62,8 +74,6 @@ const checkExpiry = async () => {
     }
 };
 
-// Runs every day at 8:00 AM
-// To test: change "0 8 * * *"  →  "* * * * *"  (every minute)
 const scheduleExpiryJob = () => {
     cron.schedule("0 8 * * *", checkExpiry);
     checkExpiry();

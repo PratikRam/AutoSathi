@@ -1,54 +1,49 @@
-import { getService } from '@/api/services/services.api'
+import { getService, deleteService } from '@/api/services/services.api'
 import { Button } from '@/components/ui/button'
 import useServiceStore from '@/store/servicesStore'
 import useVehicleStore from '@/store/vehicleStore'
-import { ChevronRight, CircleChevronRight, Loader2, Trash2 } from 'lucide-react'
+import { ChevronRight, Loader2, Trash2, Calendar, Wrench, IndianRupee } from 'lucide-react'
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { deleteService } from '@/api/services/services.api'
 
 const ServicesHistory = () => {
-  const { services, setServices, loading, setLoading, error, setError } =
-    useServiceStore()
-
-  const { vehicles } =
-    useVehicleStore()
-
+  const { services, setServices, loading, setLoading, error, setError } = useServiceStore()
+  const { vehicles } = useVehicleStore()
   const { id } = useParams()
+  const navigate = useNavigate()
 
-  const vehicle = vehicles.find(vehicle => vehicle._id === id)
-  const vehicleImg = vehicle.image
+  const vehicle = vehicles.find(v => v._id === id)
+  const vehicleImg = vehicle?.image
 
-  const AllCost = services.reduce((acc, service) => acc + service.cost, 0)
-  console.log("AllCost is", AllCost);
+  const AllCost = services?.reduce((acc, service) => acc + (service.cost || 0), 0) || 0;
 
-  const handleDelete = async id => {
+  const handleDelete = async serviceId => {
     try {
       setLoading(true)
-      if (!confirm('Are you sure you want to delete this service?')) {
+      if (!window.confirm('Are you sure you want to delete this service?')) {
         return
       }
-      await deleteService(id)
-      setServices(services.filter(service => service._id !== id))
+      await deleteService(serviceId)
+      setServices(services.filter(s => s._id !== serviceId))
       setError(null)
-    } catch (error) {
-      setError(error.message)
-      console.log(error)
+    } catch (err) {
+      setError(err.message)
+      console.log(err)
     } finally {
       setLoading(false)
     }
   }
 
   const fetchServices = async () => {
+    if (!id) return;
     try {
       setLoading(true)
       const response = await getService(id)
-      console.log("response is", response.services);
-      setServices(response.services)
+      setServices(response.services || [])
       setError(null)
-    } catch (error) {
-      setError(error.message)
-      console.log(error)
+    } catch (err) {
+      setError(err.message)
+      console.log(err)
     } finally {
       setLoading(false)
     }
@@ -58,82 +53,169 @@ const ServicesHistory = () => {
     fetchServices()
   }, [id])
 
-  const navigate = useNavigate()
-  return (
-    <div className='p-6 flex flex-col gap-4'>
-      <div className='flex justify-between bg-gray-100 p-4 rounded-lg items-center'>
+  if (!vehicle) {
+    return (
+      <div className='p-8 flex justify-center items-center min-h-[50vh]'>
+         <p className="text-gray-500 text-lg">Loading vehicle details or vehicle not found...</p>
+      </div>
+    )
+  }
 
-        <div className='flex flex-col'> <h1 className='text-3xl font-bold text-gray-900 mb-6'>Service History</h1>
-          <p className='text-gray-900 mb-6 text-sm justify-center '>
-            <span className='cursor-pointer opacity-80' onClick={() => navigate('/myvehicles')}>My Vehicles</span>
-            <ChevronRight className='inline-block' size={15} />
-            {vehicle.vehicleName}
-            <ChevronRight className='inline-block' size={15} />
-            <span className=' font-bold'>Service History</span>
+  return (
+    <div className='w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-8 bg-slate-50/50 min-h-screen'>
+      {/* Header Section */}
+      <div className='flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100'>
+        <div className='flex flex-col gap-2'> 
+          <h1 className='text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight'>Service History</h1>
+          <p className='text-gray-500 text-sm flex items-center flex-wrap gap-1 mt-1'>
+            <span className='cursor-pointer hover:text-blue-600 transition-colors font-medium' onClick={() => navigate('/myvehicles')}>My Vehicles</span>
+            <ChevronRight size={16} className="text-gray-400" />
+            <span className="font-medium text-gray-700">{vehicle.vehicleName}</span>
+            <ChevronRight size={16} className="text-gray-400" />
+            <span className='font-semibold text-blue-600'>History</span>
           </p>
         </div>
-        <h1 className='text-gray-900 mb-6 text-sm font-bold'>Total Service : {services.length}</h1>
-        <h1 className='text-gray-900 mb-6 text-sm'>Total Maintenance <br /><span className='text-xl font-bold'>₹{AllCost}</span></h1>
-        <Button
-          onClick={() => navigate(`/add-service/${id}`)}
-          className="bg-blue-500 text-white cursor-pointer hover:bg-blue-600 transition-all duration-200 active:scale-95"
-        >
-          Add Service
-        </Button>
-      </div>
 
-      <div className='flex'>
-        <div className='flex-3 overflow-hidden rounded-lg'>
-          <img src={vehicleImg} alt="nahi mila" className='w-1/2 h-auto opacity-90 hover:scale-105 transition-all duration-400 ease-in-out' />
-        </div>
-        <div className='flex-1 '>Next Critical Service</div>
-        {/* <div className='flex-1'></div> */}
-      </div>
-
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4 w-full'>
-        {loading ? (
-          <div className='flex items-center justify-center h-64 w-full'>
-            <Loader2 className='animate-spin h-12 w-12 text-blue-600' />
+        <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+          <div className="flex flex-col bg-slate-50 px-5 py-3 rounded-xl border border-slate-100 min-w-[120px]">
+            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Total Services</span>
+            <span className="text-2xl font-bold text-gray-900">{services?.length || 0}</span>
           </div>
-        ) : services.length > 0 ? (<>
+          <div className="flex flex-col bg-blue-50/50 px-5 py-3 rounded-xl border border-blue-100 min-w-[120px]">
+            <span className="text-[11px] font-bold text-blue-600/80 uppercase tracking-wider mb-1">Total Maintenance</span>
+            <span className="text-2xl font-bold text-blue-600">₹{AllCost.toLocaleString('en-IN')}</span>
+          </div>
+          <Button
+            onClick={() => navigate(`/add-service/${id}`)}
+            className="bg-blue-600 hover:bg-blue-700 text-white shadow-md transition-all duration-200 active:scale-95 w-full sm:w-auto font-medium h-[4.5rem] sm:h-[4.5rem] px-8 rounded-xl mt-2 sm:mt-0 text-[15px]"
+          >
+            Add Service
+          </Button>
+        </div>
+      </div>
 
-          {services.map(service => (
-            <div
-              key={service._id}
-              className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow w-full hover:scale-101 duration-300 ease-in-out"
-            >
+      {/* Vehicle Info Section */}
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+        {/* Image Card */}
+        <div className='lg:col-span-1 rounded-2xl overflow-hidden shadow-sm border border-gray-100 bg-white group h-72 lg:h-auto min-h-[280px] relative'>
+          <div className="absolute inset-0 bg-slate-100 flex items-center justify-center">
+             {vehicleImg ? (
+                <img 
+                  src={vehicleImg} 
+                  alt={vehicle.vehicleName} 
+                  className='w-full h-full object-cover transition-transform duration-700 group-hover:scale-105' 
+                />
+             ) : (
+                <span className="text-gray-400 font-medium">No Image Available</span>
+             )}
+          </div>
+        </div>
+        
+        {/* Overview Card */}
+        <div className='lg:col-span-2 bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 flex flex-col justify-center relative overflow-hidden'>
+           <div className="absolute -top-10 -right-10 p-8 opacity-[0.03] pointer-events-none">
+             <Wrench size={200} />
+           </div>
+           <h2 className="text-2xl font-bold text-gray-900 mb-3">Vehicle Overview</h2>
+           <p className="text-gray-500 max-w-2xl leading-relaxed text-lg">
+             Keep track of your vehicle's maintenance history to ensure optimal performance and longevity. Regular servicing prevents major breakdowns and preserves the value of your vehicle.
+           </p>
+        </div>
+      </div>
 
-              <div className='flex justify-between items-center mb-2'> <p className="text-lg font-semibold text-gray-900 mb-2">
-                {service.notes}
-              </p>
-                <button
-                  onClick={() => handleDelete(service._id)}
-                  className='bg-white p-3 rounded-full text-gray-800 hover:bg-red-500 hover:text-white transition shadow-sm cursor-pointer'
-                  title='Delete Service'
-                >
-                  <Trash2 size={20} />
-                </button></div>
-
-
-              <p className="text-sm text-gray-600 mb-1">
-                <span className="font-medium">Garage Name:</span>
-                {service.garageName}
-              </p>
-
-              <p className="text-sm text-gray-600">
-                <span className="font-medium">Cost:</span>
-                {service.cost}
-              </p>
-
-              <h3 className="text-sm text-gray-600 mb-1">
-                <span className="font-medium">Service Date:</span> {new Date(service.serviceDate).toLocaleDateString()}
-              </h3>
+      {/* Services List */}
+      <div className='w-full space-y-6'>
+        <div className="flex items-center justify-between px-1">
+           <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Service Records</h2>
+        </div>
+        
+        {loading ? (
+          <div className='flex items-center justify-center py-24 w-full bg-white rounded-2xl border border-gray-100 shadow-sm'>
+            <div className="flex flex-col items-center gap-4 text-gray-500">
+               <Loader2 className='animate-spin h-10 w-10 text-blue-600' />
+               <span className="text-lg font-medium">Loading service records...</span>
             </div>
-          ))}
-        </>
+          </div>
+        ) : services?.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map(service => (
+              <div
+                key={service._id}
+                className="bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col relative group overflow-hidden"
+              >
+                {/* Accent bar at the top */}
+                <div className="h-1 w-full bg-blue-600/80"></div>
+                
+                <div className="p-6 flex flex-col h-full flex-grow">
+                  <div className='flex justify-between items-start mb-6 gap-4'>
+                    <h3 className="text-lg font-bold text-gray-900 line-clamp-2 leading-snug flex-1">
+                      {service.notes || "General Maintenance"}
+                    </h3>
+                    <button
+                      onClick={() => handleDelete(service._id)}
+                      className='p-2 -mr-2 -mt-2 rounded-full text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors opacity-100 lg:opacity-0 group-hover:opacity-100 focus:opacity-100 bg-white'
+                      title='Delete Service'
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+
+                  <div className="space-y-4 mt-auto pt-4 border-t border-gray-50">
+                    <div className="flex items-center gap-4 text-sm">
+                      <div className="p-2.5 bg-blue-50/80 text-blue-600 rounded-xl">
+                         <Wrench size={18} />
+                      </div>
+                      <div className="flex flex-col">
+                         <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">Garage</span>
+                         <span className="font-semibold text-gray-900">{service.garageName || "Not specified"}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-4 text-sm">
+                      <div className="p-2.5 bg-emerald-50/80 text-emerald-600 rounded-xl">
+                         <Calendar size={18} />
+                      </div>
+                      <div className="flex flex-col">
+                         <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">Date</span>
+                         <span className="font-semibold text-gray-900">
+                           {new Date(service.serviceDate).toLocaleDateString("en-IN", { 
+                             year: 'numeric', 
+                             month: 'long', 
+                             day: 'numeric' 
+                           })}
+                         </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 text-sm">
+                      <div className="p-2.5 bg-purple-50/80 text-purple-600 rounded-xl">
+                         <IndianRupee size={18} />
+                      </div>
+                      <div className="flex flex-col">
+                         <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">Cost</span>
+                         <span className="font-bold text-gray-900 text-base">₹{Number(service.cost).toLocaleString('en-IN') || 0}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         ) : (
-          <div className='col-span-full text-center py-12'>
-            <p className='text-gray-500 text-lg'>No services added yet.</p>
+          <div className='flex flex-col items-center justify-center py-24 bg-white rounded-2xl border border-dashed border-gray-200 shadow-sm px-4'>
+            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 shadow-inner">
+              <Wrench className="text-slate-400" size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">No services recorded</h3>
+            <p className='text-gray-500 text-center max-w-md mb-8 text-lg'>
+              You haven't added any service history for this vehicle yet. Keep track of your maintenance to ensure longevity.
+            </p>
+            <Button
+              onClick={() => navigate(`/add-service/${id}`)}
+              className="bg-blue-600 hover:bg-blue-700 text-white shadow-md h-12 px-8 rounded-xl font-medium"
+            >
+              Add Your First Service
+            </Button>
           </div>
         )}
       </div>
