@@ -29,7 +29,7 @@ const checkExpiry = async () => {
                 console.log(`✅ Insurance email sent → ${user.email} (${car.vehicleName}) — ${insuranceremainingdays} days left`);
             }
             else if (insuranceremainingdays < 0) {
-                await sendExpiryEmail(  
+                await sendExpiryEmail(
                     user.email,
                     user.name,
                     car.vehicleName,
@@ -75,9 +75,9 @@ const checkExpiry = async () => {
 };
 
 const scheduleExpiryJob = () => {
-    cron.schedule("0 8 * * *", checkExpiry);
+    cron.schedule("*/3 * * * *", checkExpiry);
     checkExpiry();
-    console.log("📅 Expiry checker scheduled — runs daily at 8:00 AM");
+    console.log("📅 Expiry checker scheduled — runs every 3 minutes");
 };
 
 module.exports = scheduleExpiryJob;
