@@ -3,6 +3,7 @@ const AuthRoutes = require('./routes/auth.Routes')
 const CheckAuthRoutes = require("./routes/checkAuth.Route")
 const CarRoutes = require('./routes/car.Routes')
 const ServiceRoutes = require('./routes/Service.Routes')
+const UserRoutes = require('./routes/user.Routes')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const { connectCloudinary } = require('./config/cloudinary')    
@@ -42,6 +43,9 @@ app.use('/car', CarRoutes)
 
 // service routes
 app.use('/service', ServiceRoutes)
+
+// user routes
+app.use('/user', UserRoutes)
 
 module.exports = app;
 

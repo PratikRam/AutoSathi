@@ -12,6 +12,8 @@ import { useUserData } from './contexts/UserContext'
 import ServicesHistory from './features/pages/Dashboard/ServicesHistory'
 import NotFoundPage from './features/pages/error/Notfoundpage'
 import { Loader2 } from 'lucide-react'
+import MyProfile from './features/pages/Dashboard/MyProfile'
+import UpcomingServices from './features/pages/Dashboard/UpcomingServices'
 
 const App = () => {
   const { isAuthenticated, authLoading } = useUserData()
@@ -34,8 +36,6 @@ const App = () => {
         {/* <Route path='about' element={<LandingAboutUs />} /> */}
         {/* <Route path='how-it-works' element={<LandingHowitsWork />} /> */}
       </Route>
-
-
 
       {/* ==>> Private Routes */}
 
@@ -63,6 +63,8 @@ const App = () => {
         <Route path='addvehicle' element={<AddVehicle />} />
         <Route path='serviceshistory/:id' element={<ServicesHistory />} />
         <Route path='add-service/:id' element={<NewServicesEntry />} />
+        <Route path='myprofile' element={<MyProfile />} />
+        <Route path='upcoming-services' element={<UpcomingServices />} />
         <Route path='*' element={<NotFoundPage />} />
       </Route>
     </Routes>

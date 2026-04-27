@@ -3,16 +3,27 @@ import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { CarFront, CircleUserRound, Menu, X, LogOut } from 'lucide-react'
 import { CheckAuth } from '@/api/services/checkAuth.api'
+import { useUserData } from '@/contexts/UserContext'
 
 const Sidebar = () => {
   const [name, setName] = useState('')
   const [isOpen, setIsOpen] = useState(false)
 
   const navigate = useNavigate()
+  const { setIsAuthenticated } = useUserData()
 
   const handleProfileClick = () => {
-    navigate('/profile')
+    navigate('/myprofile')
     setIsOpen(false)
+  }
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+      setIsAuthenticated(false)
+    } catch (error) {
+      console.error("Logout failed:", error)
+    }
   }
 
   const user = async () => {
@@ -34,7 +45,7 @@ const Sidebar = () => {
   const menuItems = [
     { label: 'My Vehicles', path: '/myvehicles' },
     { label: 'Add Vehicle', path: '/addvehicle' },
-    { label: 'All Maintenances', path: '/allmaintenances' }
+    { label: 'Upcoming-Services', path: '/upcoming-services' }
   ]
 
   const handleNavClick = () => {
@@ -44,7 +55,7 @@ const Sidebar = () => {
   return (
     <>
       {/* Floating Mobile Toggle Button */}
-      <button 
+      <button
         className="md:hidden fixed top-5 bg-white right-5 z-[60] p-2.5 rounded-xl shadow-md border border-gray-100 text-gray-700 hover:text-blue-600 transition-all focus:outline-none"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle Menu"
@@ -54,7 +65,7 @@ const Sidebar = () => {
 
       {/* Mobile Backdrop Overlay */}
       {isOpen && (
-        <div 
+        <div
           className="md:hidden fixed inset-0 bg-slate-900/40 z-[50] backdrop-blur-sm transition-opacity"
           onClick={() => setIsOpen(false)}
         />
@@ -68,11 +79,11 @@ const Sidebar = () => {
         ${isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full shadow-none'} 
         md:translate-x-0 md:shadow-none
       `}>
-        
+
         {/* Logo Header */}
         <h2 className='text-2xl font-bold text-gray-900 mb-10 mt-2 flex items-center gap-2.5'>
           <div className="bg-blue-600 p-2 rounded-xl text-white shadow-sm flex items-center justify-center">
-             <CarFront size={22} className="stroke-[2.5]" />
+            <CarFront size={22} className="stroke-[2.5]" />
           </div>
           <span className="tracking-tight">Auto<span className='text-blue-600'>Sathi</span></span>
         </h2>
@@ -98,8 +109,8 @@ const Sidebar = () => {
 
         {/* Footer Area (Logout & Profile) */}
         <div className="flex flex-col gap-4 mt-8 pt-8 border-t border-slate-200">
-          
-          <div 
+
+          <div
             onClick={handleProfileClick}
             className='flex items-center gap-3 px-4 py-3 cursor-pointer rounded-2xl bg-white border border-gray-100 shadow-sm hover:border-blue-300 hover:shadow-md transition-all group'
           >
@@ -114,12 +125,8 @@ const Sidebar = () => {
 
           <button
             className='w-full flex items-center justify-center gap-2 text-red-600 hover:bg-red-600 hover:text-white bg-red-50 border border-red-100 shadow-sm font-bold text-[15px] h-12 rounded-2xl transition-all cursor-pointer'
-            onClick={async () => {
-              await logout()
-              navigate('/')
-            }}
+            onClick={handleLogout}
           >
-            <LogOut size={18} strokeWidth={2.5}/>
             Log out
           </button>
 

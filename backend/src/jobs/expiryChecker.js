@@ -1,6 +1,6 @@
 const cron = require("node-cron");
 const Car = require("../models/Car.model");
-const User = require("../models/User.model");
+// const User = require("../models/User.model");    
 const sendExpiryEmail = require("../utils/sendExpiryEmail");
 const getDaysLeft = require("../utils/getDaysLeft");
 
@@ -8,10 +8,10 @@ const checkExpiry = async () => {
     console.log("⏰ Running expiry check:", new Date().toLocaleString());
 
     try {
-        const cars = await Car.find()
+        const cars = await Car.find().populate("userId", "name email");
 
         for (const car of cars) {
-            const user = await User.findById(car.userId);
+            const user = car.userId;
             if (!user) continue;
 
             const insuranceremainingdays = getDaysLeft(car.insuranceExpiry);
