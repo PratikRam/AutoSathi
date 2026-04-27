@@ -75,9 +75,9 @@ const checkExpiry = async () => {
 };
 
 const scheduleExpiryJob = () => {
-    cron.schedule("*/3 * * * *", checkExpiry);
+    cron.schedule("0 8 * * *", checkExpiry);
     checkExpiry();
-    console.log("📅 Expiry checker scheduled — runs every 3 minutes");
+    console.log("📅 Expiry checker scheduled — runs daily at 8:00 AM");
 };
 
 module.exports = scheduleExpiryJob;
