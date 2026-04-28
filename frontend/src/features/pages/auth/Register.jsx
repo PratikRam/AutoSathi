@@ -110,7 +110,7 @@ const Register = () => {
             </div>
 
             {authError && (
-              <div className="p-2 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm font-medium w-fit w-full text-center">
+              <div className="p-2 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm font-medium w-fit text-center">
                 {authError}
               </div>
             )}
