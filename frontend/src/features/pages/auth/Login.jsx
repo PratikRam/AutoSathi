@@ -48,15 +48,15 @@ const Login = () => {
   return (
     <div className='min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-slate-50/50'>
       <div className='sm:mx-auto sm:w-full sm:max-w-md px-4'>
-        
-        <Link 
-            to='/' 
-            className="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-blue-600 transition-colors mb-6 group w-fit"
+
+        <Link
+          to='/'
+          className="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-blue-600 transition-colors mb-6 group w-fit"
         >
-            <ArrowLeft size={16} className="mr-1.5 group-hover:-translate-x-1.5 transition-transform" />
-            Back to Home
+          <ArrowLeft size={16} className="mr-1.5 group-hover:-translate-x-1.5 transition-transform" />
+          Back to Home
         </Link>
-        
+
         <Card className='w-full py-8 px-6 sm:px-10 border-gray-100 shadow-sm rounded-2xl bg-white'>
           <div className="mb-8 flex flex-col gap-2">
             <h2 className='text-3xl font-bold tracking-tight text-gray-900'>Welcome back</h2>
@@ -73,12 +73,11 @@ const Login = () => {
                 {...register('email', { required: 'Email is required' })}
               />
               {errors.email && (
-                <p className='text-red-500 text-xs font-medium mt-1'>{errors.email.message}</p>
+                <p className='text-red-500 text-xs font-medium mt-1 '>{errors.email.message}</p>
               )}
             </div>
 
             <div className='space-y-1.5'>
-              <Label className='block text-gray-700 font-medium'>Password</Label>
               <Input
                 type='password'
                 className='w-full border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-xl h-11 shadow-sm'

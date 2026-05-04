@@ -84,7 +84,7 @@ const Home = () => {
                 className='w-full h-auto rounded-xl shadow-sm object-cover aspect-video sm:aspect-auto'
                 onError={(e) => {
                   e.target.src = '/images/landingpage.jpg'; // Fallback
-                }}
+                  }}
               />
             </div>
 
@@ -99,17 +99,6 @@ const Home = () => {
                 <p className="text-xs text-gray-500 font-medium">Renews in 45 days</p>
               </div>
             </div>
-
-            {/* Badge 2: Service Due */}
-            {/* <div className="hidden md:flex absolute -right-8 -top-6 bg-white/95 backdrop-blur-sm p-3.5 rounded-2xl shadow-xl border border-gray-100 items-center gap-3 animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }}>
-               <div className="p-2.5 rounded-xl bg-amber-100 text-amber-600">
-                 <Wrench size={20} className="w-5 h-5" />
-               </div>
-               <div>
-                 <p className="text-sm font-bold text-gray-900">Service Alert</p>
-                 <p className="text-xs text-gray-500 font-medium">Due in 500 km</p>
-               </div>
-             </div> */}
 
             {/* Badge 3: Expense */}
             <div className="hidden lg:flex absolute -right-4 bottom-12 bg-white/95 backdrop-blur-sm p-3.5 rounded-2xl shadow-xl border border-gray-100 items-center gap-3 animate-bounce" style={{ animationDuration: '3.5s', animationDelay: '0.5s' }}>
