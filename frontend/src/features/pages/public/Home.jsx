@@ -42,14 +42,6 @@ const Home = () => {
             >
               Get Started <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
-            {/* <Button
-              variant="outline"
-              size="lg"
-              className="w-full sm:w-auto h-12 px-8 rounded-full text-base font-semibold border-gray-300 hover:bg-gray-50 transition-all"
-              onClick={() => navigate('/about')}
-            >
-              Learn More
-            </Button> */}
           </div>
 
           {/* Social Proof / Stats block */}
@@ -84,7 +76,7 @@ const Home = () => {
                 className='w-full h-auto rounded-xl shadow-sm object-cover aspect-video sm:aspect-auto'
                 onError={(e) => {
                   e.target.src = '/images/landingpage.jpg'; // Fallback
-                  }}
+                }}
               />
             </div>
 

@@ -6,6 +6,7 @@ import jsPDF from 'jspdf'
 import { ChevronRight, Loader2, Trash2, Calendar, Wrench, IndianRupee } from 'lucide-react'
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { toast } from "sonner"
 
 const ServicesHistory = () => {
   const { services, setServices, loading, setLoading, error, setError } = useServiceStore()
@@ -106,19 +107,23 @@ const ServicesHistory = () => {
     pdf.text(`Total Cost: ${AllCost}`, 10, y);
 
     pdf.save(`service-history-${vehicle.vehicleName}.pdf`);
+    toast.success('PDF generated successfully')
   };
 
   const handleDelete = async serviceId => {
     try {
-      setLoading(true)
       if (!window.confirm('Are you sure you want to delete this service?')) {
+        setLoading(false)
         return
       }
+      setLoading(true)
       await deleteService(serviceId)
       setServices(services.filter(s => s._id !== serviceId))
       setError(null)
+      toast.success('Service deleted successfully!')
     } catch (err) {
       setError(err.message)
+      toast.error('Service not deleted')
       console.log(err)
     } finally {
       setLoading(false)

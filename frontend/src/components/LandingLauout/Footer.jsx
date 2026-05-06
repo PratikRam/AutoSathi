@@ -4,13 +4,13 @@ import { Mail, CarFront } from 'lucide-react'
 
 const Footer = () => {
   return (
-    <footer className="bg-white border-t border-gray-100 mt-20">
+    <footer className="bg-white border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="flex flex-col md:flex-row justify-between gap-10 md:gap-8">
-          
+
           {/* Brand & info */}
           <div className="flex flex-col max-w-sm">
-            <Link to="/" className="flex items-center gap-2 mb-4 group w-fit">
+            <Link to="/" className="flex items-center gap-3 mb-4 group w-fit">
               <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center group-hover:bg-blue-700 transition-colors">
                 <CarFront size={18} />
               </div>

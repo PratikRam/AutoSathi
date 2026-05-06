@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useUserData } from "@/contexts/UserContext";
 import { updateProfile } from "@/api/services/user.api";
+import { toast } from "sonner"
 
 import {
     Card,
@@ -49,7 +50,9 @@ const MyProfile = () => {
                 setUser(res.user);
                 setIsEditing(false);
             }
+            toast.success('Profile updated successfully!')
         } catch (error) {
+            toast.error('Something went wrong')
             console.log(error);
         } finally {
             setLoading(false);

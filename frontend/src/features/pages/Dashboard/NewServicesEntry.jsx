@@ -9,6 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Textarea } from '@/components/ui/textarea'
 import { addServiceHandler } from '@/api/services/services.api'
 import { ArrowLeft, Loader2, Wrench } from 'lucide-react'
+import { toast } from "sonner"
 
 const NewServicesEntry = () => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm()
@@ -22,10 +23,12 @@ const NewServicesEntry = () => {
       const response = await addServiceHandler(id, data)
       console.log(response)
       setError(null)
+      toast.success('Service added successfully!')
       reset()
       navigate(`/serviceshistory/${id}`)
     } catch (error) {
       setError(error.message)
+      toast.error(error.message)
       console.log(error)
     } finally {
       setLoading(false)
@@ -35,7 +38,7 @@ const NewServicesEntry = () => {
   return (
     <div className='w-full p-4 sm:p-6 lg:p-8 flex items-center justify-center min-h-[85vh] bg-slate-50/50'>
       <div className="w-full max-w-lg">
-        <button 
+        <button
           type="button"
           onClick={() => navigate(`/serviceshistory/${id}`)}
           className="flex items-center text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors mb-6 group w-fit"

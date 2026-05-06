@@ -40,10 +40,11 @@ const AddVehicle = () => {
       addVehicleToList(response.car)
       setError(null)
       reset() // Clear form after successful submission
-      alert('Vehicle added successfully!')
+      toast.success('Vehicle added successfully!')
       navigate('/myvehicles')
     } catch (error) {
       setError(error.message)
+      toast.error(error.message)
       console.log(error.message)
     } finally {
       setLoading(false)

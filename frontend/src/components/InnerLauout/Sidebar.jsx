@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { CarFront, CircleUserRound, Menu, X, LogOut } from 'lucide-react'
 import { CheckAuth } from '@/api/services/checkAuth.api'
 import { useUserData } from '@/contexts/UserContext'
+import { toast } from "sonner"
 
 const Sidebar = () => {
   const [name, setName] = useState('')
@@ -21,8 +22,10 @@ const Sidebar = () => {
     try {
       await logout()
       setIsAuthenticated(false)
+      toast.success('Logged out successfully')
+      navigate('/')
     } catch (error) {
-      console.error("Logout failed:", error)
+      toast.error(error.message)
     }
   }
 

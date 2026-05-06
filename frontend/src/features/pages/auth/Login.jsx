@@ -8,6 +8,7 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Loader2, LogIn } from 'lucide-react'
+import { toast } from "sonner"
 
 const Login = () => {
   const {
@@ -32,10 +33,12 @@ const Login = () => {
     setAuthError('')
     try {
       const response = await loginUser(data)
+      toast.success(response?.message)
       setIsAuthenticated(true)
       setUser(response?.user ?? null)
       navigate('/myvehicles')
     } catch (err) {
+      toast.error(err.message)
       setIsAuthenticated(false)
       setUser(null)
       setAuthError(err.message)
