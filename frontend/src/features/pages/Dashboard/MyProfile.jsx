@@ -18,10 +18,14 @@ import {
     AvatarFallback,
 } from "@/components/ui/avatar";
 
-import { Mail, User, Edit2, Save, X } from "lucide-react";
+import { Mail, User, Edit2, Save, X, ChevronLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const MyProfile = () => {
     const { user, setUser } = useUserData();
+    const navigate = useNavigate()
+
+
 
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -43,14 +47,13 @@ const MyProfile = () => {
     const handleSave = async () => {
         try {
             setLoading(true);
-            console.log("🚀 ~ MyProfile ~ formData:", formData)
             const res = await updateProfile(formData);
-            // console.log("🚀 ~ MyProfile ~ res:", res)
-
-            if (res?.success) {
-                setUser(res.user);
-                setIsEditing(false);
+            console.log("🚀 ~ MyProfile ~ res:", res)
+            if (res) {
+                console.log("🚀 ~ MyProfile ~ res.user:", res)
+                setUser(res);
             }
+            setIsEditing(false);
             toast.success('Profile updated successfully!')
         } catch (error) {
             toast.error('Something went wrong')
@@ -70,6 +73,10 @@ const MyProfile = () => {
 
     return (
         <div className="min-h-screen bg-slate-100 p-4 md:p-8">
+            <Button className="mb-4 bg-white text-gray-900 border border-gray-100 shadow-sm hover:border-blue-300 hover:shadow-md transition-all cursor-pointer" onClick={() => navigate('/myvehicles')}>
+                <ChevronLeft size={24} />
+                Back
+            </Button>
             <Card className="max-w-3xl mx-auto shadow-xl rounded-2xl">
                 <CardHeader className="text-center">
                     <CardTitle className="text-3xl font-bold">
@@ -104,7 +111,7 @@ const MyProfile = () => {
                                         onChange={handleChange}
                                     />
                                 ) : (
-                                    <p className="font-medium">{user?.name}</p>
+                                    <p className="font-medium">{user.name}</p>
                                 )}
                             </div>
 
@@ -162,3 +169,4 @@ const MyProfile = () => {
 };
 
 export default MyProfile;
+

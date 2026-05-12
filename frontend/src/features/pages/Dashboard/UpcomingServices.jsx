@@ -1,140 +1,183 @@
 import React, { useEffect, useState } from 'react'
 import { Calendar, Car, Wrench, AlertTriangle, Loader2 } from 'lucide-react'
+import { getVehicle } from '@/api/services/vehicle.api'
 
 const UpcomingServices = () => {
     const [upcomingServices, setUpcomingServices] = useState([])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        // Replace with API call
-        const mockData = [
-            {
-                id: 1,
-                vehicleName: "Honda City",
-                serviceType: "Oil Change",
-                nextServiceDate: "2026-05-02",
-                cost: 2500,
-            },
-            {
-                id: 2,
-                vehicleName: "Activa 6G",
-                serviceType: "Brake Check",
-                nextServiceDate: "2026-04-28",
-                cost: 1800,
-            },
-            {
-                id: 3,
-                vehicleName: "Royal Enfield",
-                serviceType: "General Service",
-                nextServiceDate: "2026-04-20",
-                cost: 4000,
-            }
-        ]
-
-        setTimeout(() => {
-            setUpcomingServices(mockData)
-            setLoading(false)
-        }, 800)
+        fetchUpcomingServices()
     }, [])
 
+    const fetchUpcomingServices = async () => {
+        try {
+            const response = await getVehicle()
+
+            const vehicles = response.cars || []
+
+            const data = vehicles
+                .map((vehicle) => {
+                    const services = [
+                        vehicle.insuranceExpiry && {
+                            type: "Insurance Renewal",
+                            date: vehicle.insuranceExpiry,
+                            cost: 1500,
+                        },
+
+                        vehicle.pucExpiry && {
+                            type: "PUC Renewal",
+                            date: vehicle.pucExpiry,
+                            cost: 150,
+                        },
+                    ]
+                        .filter(Boolean)
+                        .sort((a, b) => new Date(a.date) - new Date(b.date))
+
+                    return {
+                        id: vehicle._id,
+                        vehicleName: vehicle.vehicleName,
+                        vehicleImg: vehicle.vehicleImage,
+                        services,
+                    }
+                })
+                .filter((vehicle) => vehicle.services.length > 0)
+                .sort(
+                    (a, b) =>
+                        new Date(a.services[0].date) -
+                        new Date(b.services[0].date)
+                )
+
+            setUpcomingServices(data)
+        } catch (error) {
+            console.log("Failed to fetch upcoming services:", error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const getDaysLeft = (date) => {
-        const today = new Date()
-        const serviceDate = new Date(date)
-
-        const diffTime = serviceDate - today
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-        return diffDays
+        return Math.ceil(
+            (new Date(date) - new Date()) / (1000 * 60 * 60 * 24)
+        )
     }
 
     if (loading) {
         return (
-            <div className="p-6 text-center text-gray-500 flex items-center justify-center gap-2 h-screen">
-               < Loader2 className='animate-spin text-blue-600' /> Loading upcoming services...
+            <div className="h-screen flex items-center justify-center gap-2 text-gray-500">
+                <Loader2 className="animate-spin text-blue-600" />
+                Loading upcoming services...
             </div>
         )
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 p-4 md:p-8">
-            <div className="max-w-6xl mx-auto">
+        <section className="min-h-screen bg-gray-100 p-4 md:p-8">
+            <div className="max-w-6xl mx-auto space-y-6">
 
                 {/* Header */}
-                <div className="mb-6">
+                <header>
                     <h1 className="text-3xl font-bold text-gray-900">
                         Upcoming Services
                     </h1>
-                    <p className="text-gray-500 mt-2">
+
+                    <p className="text-gray-500">
                         Track your upcoming vehicle maintenance schedules
                     </p>
-                </div>
+                </header>
 
                 {/* Empty State */}
-                {upcomingServices.length === 0 ? (
+                {!upcomingServices.length ? (
                     <div className="bg-white rounded-2xl shadow-md p-10 text-center">
-                        <AlertTriangle className="mx-auto text-gray-400 mb-4" size={50} />
-                        <h2 className="text-xl font-semibold">No Upcoming Services</h2>
-                        <p className="text-gray-500 mt-2">
+                        <AlertTriangle
+                            size={50}
+                            className="mx-auto mb-4 text-gray-400"
+                        />
+
+                        <h2 className="text-xl font-semibold">
+                            No Upcoming Services
+                        </h2>
+
+                        <p className="text-gray-500">
                             You're all set for now 🚗
                         </p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {upcomingServices.map((service) => {
-                            const daysLeft = getDaysLeft(service.nextServiceDate)
-                            const isOverdue = daysLeft < 0
-
-                            return (
-                                <div
-                                    key={service.id}
-                                    className="bg-white rounded-2xl shadow-md p-5 hover:shadow-lg transition"
-                                >
-
-                                    {/* Vehicle */}
-                                    <div className="flex items-center gap-2 mb-4">
-                                        <Car className="text-blue-600" size={20} />
-                                        <h2 className="font-bold text-lg">
-                                            {service.vehicleName}
-                                        </h2>
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {upcomingServices.map((vehicle) => (
+                            <div
+                                key={vehicle.id}
+                                className="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition"
+                            >
+                                {/* Vehicle */}
+                                <div className="flex items-center gap-3 border-b pb-4 mb-4">
+                                    <div className="bg-blue-50 p-3 rounded-xl">
+                                        <Car
+                                            size={22}
+                                            className="text-blue-600"
+                                        />
                                     </div>
 
-                                    {/* Service Type */}
-                                    <div className="flex items-center gap-2 text-gray-600 mb-3">
-                                        <Wrench size={18} />
-                                        <span>{service.serviceType}</span>
-                                    </div>
-
-                                    {/* Date */}
-                                    <div className="flex items-center gap-2 text-gray-600 mb-3">
-                                        <Calendar size={18} />
-                                        <span>{service.nextServiceDate}</span>
-                                    </div>
-
-                                    {/* Cost */}
-                                    <p className="text-sm text-gray-500 mb-4">
-                                        Estimated Cost: ₹{service.cost}
-                                    </p>
-
-                                    {/* Status Badge */}
-                                    <span
-                                        className={`px-3 py-1 rounded-full text-sm font-medium ${isOverdue
-                                                ? "bg-red-100 text-red-600"
-                                                : daysLeft <= 7
-                                                    ? "bg-yellow-100 text-yellow-700"
-                                                    : "bg-green-100 text-green-600"
-                                            }`}
-                                    >
-                                        {isOverdue
-                                            ? `${Math.abs(daysLeft)} days overdue`
-                                            : `${daysLeft} days left`}
-                                    </span>
+                                    <h2 className="text-lg font-bold">
+                                        {vehicle.vehicleName}
+                                    </h2>
                                 </div>
-                            )
-                        })}
+
+                                {/* Services */}
+                                <div className="space-y-3">
+                                    {vehicle.services.map((service, index) => {
+                                        const daysLeft = getDaysLeft(service.date)
+                                        const isOverdue = daysLeft < 0
+
+                                        const statusClass = isOverdue
+                                            ? "bg-red-100 text-red-600"
+                                            : daysLeft <= 7
+                                                ? "bg-yellow-100 text-yellow-700"
+                                                : "bg-green-100 text-green-600"
+
+                                        return (
+                                            <div
+                                                key={index}
+                                                className="rounded-xl border bg-gray-50 p-3 space-y-2"
+                                            >
+                                                <div className="flex items-center justify-between">
+                                                    <p className="flex items-center gap-2 font-semibold text-sm">
+                                                        <Wrench
+                                                            size={15}
+                                                            className="text-blue-500"
+                                                        />
+                                                        {service.type}
+                                                    </p>
+
+                                                    <span
+                                                        className={`text-[11px] px-2 py-1 rounded-full font-bold ${statusClass}`}
+                                                    >
+                                                        {isOverdue
+                                                            ? `${Math.abs(daysLeft)}d overdue`
+                                                            : `${daysLeft}d left`}
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex items-center justify-between text-sm text-gray-500">
+                                                    <p className="flex items-center gap-1">
+                                                        <Calendar size={14} />
+                                                        {service.date}
+                                                    </p>
+
+                                                    <span>
+                                                        ₹{service.cost}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>
-        </div>
+        </section>
     )
 }
 

@@ -7,11 +7,10 @@ import { useUserData } from '@/contexts/UserContext'
 import { toast } from "sonner"
 
 const Sidebar = () => {
-  const [name, setName] = useState('')
   const [isOpen, setIsOpen] = useState(false)
 
   const navigate = useNavigate()
-  const { setIsAuthenticated } = useUserData()
+  const { setIsAuthenticated, user } = useUserData()
 
   const handleProfileClick = () => {
     navigate('/myprofile')
@@ -28,22 +27,6 @@ const Sidebar = () => {
       toast.error(error.message)
     }
   }
-
-  const user = async () => {
-    try {
-      const resp = await CheckAuth()
-      if (resp?.user?.name) {
-        const { name } = resp.user
-        setName(name.charAt(0).toUpperCase() + name.slice(1))
-      }
-    } catch (error) {
-      console.error("Auth check failed:", error)
-    }
-  }
-
-  useEffect(() => {
-    user()
-  }, [])
 
   const menuItems = [
     { label: 'My Vehicles', path: '/myvehicles' },
@@ -122,7 +105,7 @@ const Sidebar = () => {
             </div>
             <div className="flex flex-col overflow-hidden">
               <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider leading-none mb-1">Account</span>
-              <span className='text-[15px] font-bold text-gray-900 leading-none truncate w-28'>{name || 'User'}</span>
+              <span className='text-[15px] font-bold text-gray-900 leading-none truncate w-28 capitalize'>{user?.name || 'User'}</span>
             </div>
           </div>
 
