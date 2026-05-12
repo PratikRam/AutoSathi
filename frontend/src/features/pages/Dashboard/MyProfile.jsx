@@ -43,8 +43,9 @@ const MyProfile = () => {
     const handleSave = async () => {
         try {
             setLoading(true);
-
+            console.log("🚀 ~ MyProfile ~ formData:", formData)
             const res = await updateProfile(formData);
+            // console.log("🚀 ~ MyProfile ~ res:", res)
 
             if (res?.success) {
                 setUser(res.user);

@@ -3,6 +3,8 @@ const User = require('../models/user.model')
 const updateProfile = async (req, res) => {
     try {
         const { name, email } = req.body
+        console.log("🚀 ~ updateProfile ~ req:", name, email)
+
         const user = await User.findByIdAndUpdate(req.user.id, { name, email }, { new: true })
         res.json(user)
     } catch (error) {
