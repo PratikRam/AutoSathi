@@ -9,7 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from "sonner"
 
 const ServicesHistory = () => {
-  const { services, setServices, loading, setLoading, error, setError } = useServiceStore()
+  const { services, setServices, loading, setLoading, setError } = useServiceStore()
   const { vehicles } = useVehicleStore()
   const { id } = useParams()
   const navigate = useNavigate()

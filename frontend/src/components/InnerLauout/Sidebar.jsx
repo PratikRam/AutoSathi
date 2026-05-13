@@ -1,7 +1,7 @@
 import { logout } from '@/api/services/auth.api'
 import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { CarFront, CircleUserRound, Menu, X, LogOut } from 'lucide-react'
+import { CarFront, CircleUserRound, Menu, X } from 'lucide-react'
 import { CheckAuth } from '@/api/services/checkAuth.api'
 import { useUserData } from '@/contexts/UserContext'
 import { toast } from "sonner"
