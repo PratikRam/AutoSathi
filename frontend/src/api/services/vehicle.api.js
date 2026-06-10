@@ -1,7 +1,6 @@
 
 import { axiosInstance } from "../axios";
 
-
 export const addVehicle = async (data) => {
     try {
         const responce = await axiosInstance.post('/car/add', data, {

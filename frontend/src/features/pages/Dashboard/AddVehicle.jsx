@@ -7,6 +7,8 @@ import { addVehicle } from '@/api/services/vehicle.api'
 import useVehicleStore from '@/store/vehicleStore'
 import { useNavigate } from 'react-router-dom'
 import { Camera } from 'lucide-react'
+// import { toast } from '@/components/ui/toast'
+
 
 const AddVehicle = () => {
   const {
@@ -40,11 +42,11 @@ const AddVehicle = () => {
       addVehicleToList(response.car)
       setError(null)
       reset() // Clear form after successful submission
-      toast.success('Vehicle added successfully!')
+      // toast.success('Vehicle added successfully!')
       navigate('/myvehicles')
     } catch (error) {
       setError(error.message)
-      toast.error(error.message)
+      // toast.error(error.message)
       console.log(error.message)
     } finally {
       setLoading(false)

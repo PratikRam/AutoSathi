@@ -32,6 +32,10 @@ app.use(express.json());
 app.use(cookieParser())
 // console.log("auth :", AuthRoutes);
 
+app.get('/', (req, res) => {
+    res.send("Welcome to AutoSathi API");
+});
+
 // auth routes
 app.use('/api/auth', AuthRoutes)
 
