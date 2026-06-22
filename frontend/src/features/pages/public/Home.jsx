@@ -63,7 +63,7 @@ const Home = () => {
 
         {/* Right Column - Visual */}
         <div className="flex-1 w-full relative perspective-1000 mt-10 lg:mt-0">
-          <div className="relative w-full max-w-lg mx-auto lg:max-w-none lg:w-[110%] lg:-mr-[10%]">
+          <div className="relative w-full max-w-lg mx-auto lg:max-w-none lg:w-[110%] lg:-mr-[10%] -mb-10">
 
             {/* Decorative blob behind image */}
             {/* <div className="absolute inset-0 bg-gradient-to-tr from-blue-100 to-indigo-50 rounded-3xl transform rotate-3 scale-105 -z-10 transition-transform duration-700 hover:rotate-6"></div> */}
