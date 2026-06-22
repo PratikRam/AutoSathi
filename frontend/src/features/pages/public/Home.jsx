@@ -45,7 +45,7 @@ const Home = () => {
           </div>
 
           {/* Social Proof / Stats block */}
-          <div className="mt-10 pt-8 border-t border-gray-100 flex flex-wrap items-center justify-center lg:justify-start gap-8 lg:gap-12">
+          {/* <div className="mt-10 pt-8 border-t border-gray-100 flex flex-wrap items-center justify-center lg:justify-start gap-8 lg:gap-12">
             <div>
               <p className="text-2xl sm:text-3xl font-bold text-gray-900">10k+</p>
               <p className="text-sm text-gray-500 font-medium">Active Users</p>
@@ -58,7 +58,7 @@ const Home = () => {
               <p className="text-2xl sm:text-3xl font-bold text-gray-900">4.9/5</p>
               <p className="text-sm text-gray-500 font-medium">User Rating</p>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Right Column - Visual */}
