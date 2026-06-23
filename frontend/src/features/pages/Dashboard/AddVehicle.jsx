@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button'
 import { addVehicle } from '@/api/services/vehicle.api'
 import useVehicleStore from '@/store/vehicleStore'
 import { useNavigate } from 'react-router-dom'
-import { Camera } from 'lucide-react'
+import { Camera, Loader2 } from 'lucide-react'
+import { useState } from 'react'
 // import { toast } from '@/components/ui/toast'
 
 
@@ -19,6 +20,8 @@ const AddVehicle = () => {
   } = useForm()
 
   const { addVehicleToList, setLoading, setError } = useVehicleStore()
+
+  const [addLoading, setAddLoading] = useState(false)
 
   const navigate = useNavigate()
   const AddVehiclehandler = async data => {
@@ -36,6 +39,7 @@ const AddVehicle = () => {
     console.log(formData)
 
     try {
+      setAddLoading(true)
       setLoading(true)
       const response = await addVehicle(formData)
       // console.log(response.car)
@@ -50,6 +54,7 @@ const AddVehicle = () => {
       console.log(error.message)
     } finally {
       setLoading(false)
+      setAddLoading(false)
     }
   }
 
@@ -261,9 +266,17 @@ const AddVehicle = () => {
               </Button>
               <Button
                 type='submit'
-                className='bg-[#5a5c65] hover:bg-[#4a4c51] text-white rounded-lg px-6 py-5 shadow-sm transition-all cursor-pointer'
+                disabled={addLoading}
+                className='bg-[#5a5c65] hover:bg-[#4a4c51] text-white rounded-lg px-6 py-5 shadow-sm transition-all cursor-pointer flex items-center gap-2'
               >
-                Add Vehicle
+                {addLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Adding Vehicle...</span>
+                  </>
+                ) : (
+                  "Add Vehicle"
+                )}
               </Button>
             </div>
           </form>

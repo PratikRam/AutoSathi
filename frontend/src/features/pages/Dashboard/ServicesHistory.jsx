@@ -1,119 +1,39 @@
 import { getService, deleteService } from '@/api/services/services.api'
+import { getVehicle } from '@/api/services/vehicle.api'
 import { Button } from '@/components/ui/button'
 import useServiceStore from '@/store/servicesStore'
 import useVehicleStore from '@/store/vehicleStore'
-import jsPDF from 'jspdf'
-import { ChevronRight, Loader2, Trash2, Calendar, Wrench, IndianRupee } from 'lucide-react'
-import { useEffect } from 'react'
+import { ChevronRight, Loader2, Trash2, Calendar, Wrench, IndianRupee, TriangleAlert } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from "sonner"
+import generatePDF from '@/helper/GeneratePDF'
 
 const ServicesHistory = () => {
   const { services, setServices, loading, setLoading, setError } = useServiceStore()
-  const { vehicles } = useVehicleStore()
+  const { vehicles, setVehicles } = useVehicleStore()
   const { id } = useParams()
   const navigate = useNavigate()
+  
+  const [loadingVehicle, setLoadingVehicle] = useState(false)
 
   const vehicle = vehicles.find(v => v._id === id)
   const vehicleImg = vehicle?.image
 
   const AllCost = services?.reduce((acc, service) => acc + (service.cost || 0), 0) || 0;
 
-
-  const generatePDF = () => {
-    const pdf = new jsPDF();
-    let y = 20;
-
-    // Header Background
-    pdf.setFillColor(37, 99, 235); // blue
-    pdf.rect(0, 0, 210, 30, "F");
-
-    // Header Text
-    pdf.setTextColor(255, 255, 255);
-    pdf.setFontSize(20);
-    pdf.setFont("helvetica", "bold");
-    pdf.text("Service History Report", 60, 20);
-
-    y = 40;
-
-    // Reset text color
-    pdf.setTextColor(0, 0, 0);
-
-    // Vehicle Details Section
-    pdf.setFontSize(14);
-    pdf.setFont("helvetica", "bold");
-    y += 10;
-    pdf.text("Vehicle Details", 10, y);
-    y += 10;
-
-    pdf.setFontSize(12);
-    pdf.setFont("helvetica", "normal");
-
-    pdf.text(`Vehicle Name: ${vehicle.vehicleName}`, 10, y);
-    y += 8;
-
-    pdf.text(`Registration No: ${vehicle.registrationNumber}`, 10, y);
-    y += 15;
-
-    // Services Section Title
-    pdf.setFontSize(14);
-    pdf.setFont("helvetica", "bold");
-    pdf.text("Service Records :", 10, y);
-    y += 10;
-
-    services.forEach((service, index) => {
-      if (y > 250) {
-        pdf.addPage();
-        y = 20;
-      }
-
-      const serviceNumber = services.length - index;
-      const serviceDate = new Date(service.serviceDate);
-      const newDate = serviceDate.toLocaleDateString('en-IN');
-
-      // Card background
-      pdf.setFillColor(240, 248, 255);
-      pdf.roundedRect(10, y - 5, 190, 35, 3, 3, "F");
-
-      pdf.setFontSize(12);
-      pdf.setFont("helvetica", "bold");
-      pdf.text(`Service ${serviceNumber}`, 15, y + 2);
-
-      pdf.setFont("helvetica", "normal");
-
-      pdf.text(`Notes: ${service.notes}`, 15, y + 10);
-      pdf.text(`Garage: ${service.garageName}`, 15, y + 18);
-      pdf.text(`Date: ${newDate}`, 110, y + 10);
-      pdf.text(`Cost: ${service.cost}`, 110, y + 18);
-
-      y += 45;
-    });
-
-    // Summary Section
-    if (y > 250) {
-      pdf.addPage();
-      y = 20;
+  const buildPDF = () => {
+    try {
+      generatePDF(vehicle, services, AllCost)
+    } catch (err) {
+      setError(err.message)
+      toast.error("Failed to generate PDF")
     }
-
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(14);
-    pdf.text("Summary", 10, y);
-    y += 10;
-
-    pdf.setFont("helvetica", "normal");
-    pdf.text(`Total Services: ${services.length}`, 10, y);
-    y += 8;
-
-    pdf.text(`Total Cost: ${AllCost}`, 10, y);
-
-    pdf.save(`service-history-${vehicle.vehicleName}.pdf`);
-    toast.success('PDF generated successfully')
-  };
+  }
 
   const handleDelete = async serviceId => {
     try {
       if (!window.confirm('Are you sure you want to delete this service?')) {
-        setLoading(false)
         return
       }
       setLoading(true)
@@ -146,13 +66,53 @@ const ServicesHistory = () => {
   }
 
   useEffect(() => {
+    const fetchVehicles = async () => {
+      if (vehicles.length === 0) {
+        try {
+          setLoadingVehicle(true)
+          const response = await getVehicle()
+          setVehicles(response.cars || [])
+        } catch (err) {
+          console.error(err)
+          toast.error("Failed to load vehicle details")
+        } finally {
+          setLoadingVehicle(false)
+        }
+      }
+    }
+    fetchVehicles()
     fetchServices()
-  }, [id])
+  }, [id, vehicles.length, setVehicles])
+
+  if (loadingVehicle) {
+    return (
+      <div className='p-8 flex justify-center items-center min-h-[50vh]'>
+        <div className="flex flex-col items-center gap-4 text-gray-500">
+          <Loader2 className='animate-spin h-10 w-10 text-blue-600' />
+          <span className="text-lg font-medium">Loading vehicle details...</span>
+        </div>
+      </div>
+    )
+  }
 
   if (!vehicle) {
     return (
-      <div className='p-8 flex justify-center items-center min-h-[50vh]'>
-        <p className="text-gray-500 text-lg">Loading vehicle details or vehicle not found...</p>
+      <div className='p-8 flex flex-col justify-center items-center min-h-[60vh] gap-6 text-center bg-slate-50/50'>
+        <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center shadow-inner">
+          <TriangleAlert className="text-red-500" size={36} />
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-xl font-bold text-gray-900">Vehicle Not Found</h3>
+          <p className="text-gray-500 max-w-md text-base leading-relaxed">
+            The vehicle details you are trying to view could not be located. It may have been deleted or the ID is incorrect.
+          </p>
+        </div>
+        <Button
+          onClick={() => navigate('/myvehicles')}
+          className="bg-blue-600 hover:bg-blue-700 text-white shadow-md transition-all duration-200 active:scale-95 px-6 h-12 rounded-xl font-medium"
+        >
+          Back to My Vehicles
+        </Button>
       </div>
     )
   }
@@ -228,7 +188,7 @@ const ServicesHistory = () => {
           </h2>
 
           <Button
-            onClick={() => generatePDF()}
+            onClick={buildPDF}
             className="bg-blue-600 hover:bg-blue-700 text-white shadow-md transition-all duration-200 active:scale-95 w-full sm:w-auto h-12 sm:h-[4.5rem] px-6 sm:px-8 rounded-xl text-sm sm:text-[15px] font-medium"
           >
             Download PDF
@@ -260,7 +220,7 @@ const ServicesHistory = () => {
                     </h3>
                     <button
                       onClick={() => handleDelete(service._id)}
-                      className='p-2 -mr-2 -mt-2 rounded-full text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors opacity-100 lg:opacity-0 group-hover:opacity-100 focus:opacity-100 bg-white'
+                      className='p-2 -mr-2 -mt-2 rounded-full text-gray-400 hover:bg-red-100 hover:text-red-500 hover:scale-110 active:scale-95 transition-all duration-300 opacity-100 lg:opacity-0 group-hover:opacity-100 focus:opacity-100 bg-white'
                       title='Delete Service'
                     >
                       <Trash2 size={18} />
@@ -300,7 +260,7 @@ const ServicesHistory = () => {
                       </div>
                       <div className="flex flex-col">
                         <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">Cost</span>
-                        <span className="font-bold text-gray-900 text-base">₹{Number(service.cost).toLocaleString('en-IN') || 0}</span>
+                        <span className="font-bold text-gray-900 text-base">₹{(Number(service.cost) || 0).toLocaleString('en-IN')}/-</span>
                       </div>
                     </div>
                   </div>

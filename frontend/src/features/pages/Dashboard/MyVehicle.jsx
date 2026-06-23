@@ -237,7 +237,7 @@ const MyVehicle = () => {
                             <TriangleAlert />
                             PUC Expiry
                           </span>
-                        ) : vehicle.pucRemainingDays < 7 ? (
+                        ) : vehicle.pucRemainingDays <= 7 ? (
                           <span className='text-yellow-500 flex items-center gap-2'>
                             <ClockAlert />
                             PUC Due
